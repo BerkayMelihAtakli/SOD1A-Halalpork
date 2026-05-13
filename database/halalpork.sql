@@ -2,23 +2,23 @@
 -- version 5.2.1
 -- https://www.phpmyadmin.net/
 --
-<<<<<<< Updated upstream
-=======
-<<<<<<< HEAD
+--<<<<<<< Updated upstream
+--=======
+--<<<<<<< HEAD
 -- Host: 127.0.0.1:3306
 -- Gegenereerd op: 13 mei 2026 om 08:52
 -- Serverversie: 9.1.0
 -- PHP-versie: 8.3.14
 =======
->>>>>>> Stashed changes
+-->>>>>>> Stashed changes
 -- Host: localhost:8889
 -- Generation Time: May 12, 2026 at 08:19 AM
 -- Server version: 8.0.40
 -- PHP Version: 8.3.14
-<<<<<<< Updated upstream
-=======
->>>>>>> 0c2472f0ac1ef8b3677b32f46bc69e93cba9b3ea
->>>>>>> Stashed changes
+--<<<<<<< Updated upstream
+--=======
+-->>>>>>> 0c2472f0ac1ef8b3677b32f46bc69e93cba9b3ea
+-->>>>>>> Stashed changes
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -37,9 +37,9 @@ SET time_zone = "+00:00";
 -- --------------------------------------------------------
 
 --
-<<<<<<< Updated upstream
+--<<<<<<< Updated upstream
 =======
-<<<<<<< HEAD
+--<<<<<<< HEAD
 -- Tabelstructuur voor tabel `category`
 --
 
@@ -53,7 +53,7 @@ CREATE TABLE IF NOT EXISTS `category` (
 --
 -- Gegevens worden geëxporteerd voor tabel `category`
 =======
->>>>>>> Stashed changes
+-->>>>>>> Stashed changes
 -- Table structure for table `category`
 --
 
@@ -64,10 +64,10 @@ CREATE TABLE `category` (
 
 --
 -- Dumping data for table `category`
-<<<<<<< Updated upstream
+--<<<<<<< Updated upstream
 =======
->>>>>>> 0c2472f0ac1ef8b3677b32f46bc69e93cba9b3ea
->>>>>>> Stashed changes
+-->>>>>>> 0c2472f0ac1ef8b3677b32f46bc69e93cba9b3ea
+-->>>>>>> Stashed changes
 --
 
 INSERT INTO `category` (`ID`, `name`) VALUES
@@ -86,9 +86,9 @@ INSERT INTO `category` (`ID`, `name`) VALUES
 -- --------------------------------------------------------
 
 --
-<<<<<<< Updated upstream
+--<<<<<<< Updated upstream
 =======
-<<<<<<< HEAD
+--<<<<<<< HEAD
 -- Tabelstructuur voor tabel `client`
 --
 
@@ -96,16 +96,16 @@ DROP TABLE IF EXISTS `client`;
 CREATE TABLE IF NOT EXISTS `client` (
   `id` int NOT NULL AUTO_INCREMENT,
 =======
->>>>>>> Stashed changes
+-->>>>>>> Stashed changes
 -- Table structure for table `client`
 --
 
 CREATE TABLE `client` (
   `id` int NOT NULL,
-<<<<<<< Updated upstream
+--<<<<<<< Updated upstream
 =======
->>>>>>> 0c2472f0ac1ef8b3677b32f46bc69e93cba9b3ea
->>>>>>> Stashed changes
+-->>>>>>> 0c2472f0ac1ef8b3677b32f46bc69e93cba9b3ea
+-->>>>>>> Stashed changes
   `first_name` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
   `last_name` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
   `email` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
@@ -116,9 +116,9 @@ CREATE TABLE `client` (
   `country` int DEFAULT NULL,
   `telephone` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
   `isadmin` varchar(1) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL DEFAULT 'N',
-<<<<<<< Updated upstream
+--<<<<<<< Updated upstream
 =======
-<<<<<<< HEAD
+--<<<<<<< HEAD
   `pswrd` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=427 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
@@ -126,23 +126,23 @@ CREATE TABLE `client` (
 --
 -- Gegevens worden geëxporteerd voor tabel `client`
 =======
->>>>>>> Stashed changes
+-->>>>>>> Stashed changes
   `pswrd` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `client`
-<<<<<<< Updated upstream
+--<<<<<<< Updated upstream
 =======
->>>>>>> 0c2472f0ac1ef8b3677b32f46bc69e93cba9b3ea
->>>>>>> Stashed changes
+-->>>>>>> 0c2472f0ac1ef8b3677b32f46bc69e93cba9b3ea
+-->>>>>>> Stashed changes
 --
 
 INSERT INTO `client` (`id`, `first_name`, `last_name`, `email`, `adress`, `zipcode`, `city`, `state`, `country`, `telephone`, `isadmin`, `pswrd`) VALUES
 (0, 'Dummy', 'Klant', 'NietBestaand@nowhere.org', 'Geen adres 000', '9999 XX', 'Niet Bestaand', 'Voor bestellingen verwijderde klanten', 157, 'HOOFDKANTOOR', 'N', ' '),
-<<<<<<< Updated upstream
+--<<<<<<< Updated upstream
 =======
-<<<<<<< HEAD
+--<<<<<<< HEAD
 (1, 'Addison', 'Hacun', 'ahacun0@gravatar.com', '6 Milwaukee Plaza', '37217', 'Witzenhausen', 'Hessen', 83, '731-190-6635', 'N', ''),
 (2, 'Bartholomeo', 'Paddock', 'bpaddock1@walmart.com', '3600 Pond Trail', 'M14', 'Manchester', 'England', 235, '497-381-8562', 'N', ''),
 (3, 'Willette', 'Dunning', 'wdunning2@jigsy.com', '5 Walton Way', '3324', 'Dordrecht', 'Provincie Zuid-Holland', 157, '414-244-3587', 'N', ''),
@@ -997,17 +997,17 @@ INSERT INTO `client` (`id`, `first_name`, `last_name`, `email`, `adress`, `zipco
 (423, 'Dorolice', 'Grebbin', 'dgrebbinbq@tripadvisor.com', '3661 Mallard Alley', '7909', 'Hoogeveen', 'Provincie Drenthe', 157, '867-293-4237', 'N', '$2y$10$NV/3pHRkqjvwhjtWS8V45uwbdQFDhdGaYxBrhyQrZRDueO.wGMyPy'),
 (424, 'Yelena', 'Skace', 'yskacebr@ezinearticles.com', '19856 Badeau Circle', '6844', 'Arnhem', 'Provincie Gelderland', 157, '453-803-4988', 'N', '$2y$10$NV/3pHRkqjvwhjtWS8V45uwbdQFDhdGaYxBrhyQrZRDueO.wGMyPy'),
 (425, 'Cora', 'Salzen', 'csalzenbs@ehow.com', '25088 Nova Plaza', '3899', 'Zeewolde', 'Provincie Flevoland', 157, '123-992-9827', 'N', '$2y$10$NV/3pHRkqjvwhjtWS8V45uwbdQFDhdGaYxBrhyQrZRDueO.wGMyPy');
-<<<<<<< Updated upstream
+--<<<<<<< Updated upstream
 =======
->>>>>>> 0c2472f0ac1ef8b3677b32f46bc69e93cba9b3ea
->>>>>>> Stashed changes
+-->>>>>>> 0c2472f0ac1ef8b3677b32f46bc69e93cba9b3ea
+-->>>>>>> Stashed changes
 
 -- --------------------------------------------------------
 
 --
-<<<<<<< Updated upstream
+--<<<<<<< Updated upstream
 =======
-<<<<<<< HEAD
+--<<<<<<< HEAD
 -- Tabelstructuur voor tabel `country`
 --
 
@@ -1022,7 +1022,7 @@ CREATE TABLE IF NOT EXISTS `country` (
 --
 -- Gegevens worden geëxporteerd voor tabel `country`
 =======
->>>>>>> Stashed changes
+-->>>>>>> Stashed changes
 -- Table structure for table `country`
 --
 
@@ -1034,10 +1034,10 @@ CREATE TABLE `country` (
 
 --
 -- Dumping data for table `country`
-<<<<<<< Updated upstream
+--<<<<<<< Updated upstream
 =======
->>>>>>> 0c2472f0ac1ef8b3677b32f46bc69e93cba9b3ea
->>>>>>> Stashed changes
+-->>>>>>> 0c2472f0ac1ef8b3677b32f46bc69e93cba9b3ea
+-->>>>>>> Stashed changes
 --
 
 INSERT INTO `country` (`idcountry`, `name`, `code`) VALUES
