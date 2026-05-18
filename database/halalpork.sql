@@ -26,11 +26,6 @@ CREATE TABLE IF NOT EXISTS `category` (
 -- Table structure for table `category`
 --
 
-CREATE TABLE `category` (
-  `ID` int NOT NULL,
-  `name` varchar(25) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
 --
 -- Dumping data for table `category`
 -- -- <<<<<<< Updated upstream
