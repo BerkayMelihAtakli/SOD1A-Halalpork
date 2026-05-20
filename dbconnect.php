@@ -1,7 +1,7 @@
 <?php 
 try 
 { 
-    $db = new PDO('mysql:host=localhost;dbname=halalpork', 'root' ,'root'); 
+    $db = new PDO('mysql:host=localhost;dbname=halalpork', 'root' ,''); 
 } 
 catch(PDOException $e) 
 { 
