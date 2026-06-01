@@ -1,0 +1,35 @@
+Wat is toegevoegd voor de docent-demo:
+
+1. Databaseconnectie gefixt voor MAMP op Mac
+- dbconnect.php gebruikt nu root/root.
+- Er is ook een fallback naar root zonder wachtwoord.
+
+2. Simpele demo-login toegevoegd
+- login.php: pagina met knoppen om als beheerder of klant in te loggen.
+- admin-login.php: zet de sessie op beheerder.
+- client-login.php: zet de sessie op klant.
+- logout.php: logt uit.
+
+3. Menu uitgebreid
+- In nav.html is een Account-menu toegevoegd met Login, Admin demo en Uitloggen.
+- Via Onderhoud kan de beheerder naar Producten, Categorieen en Landen.
+
+4. Producten uit database zichtbaar
+- pro-crud-shw.php toont actieve producten uit de product-tabel.
+- pro-crud-get.php toont alle producten voor de beheerder met knoppen voor wijzigen en verwijderen.
+
+5. CRUD werkt als admin
+- Eerst naar login.php gaan.
+- Klik op Login als beheerder of Admin demo.
+- Ga daarna naar pro-crud-get.php, cat-crud-get.php of cou-crud-get.php.
+- Daar kun je toevoegen, wijzigen en verwijderen testen.
+
+Snelle demo-volgorde:
+1. Open localhost:8888/login.php
+2. Klik Login als beheerder
+3. Je komt op Onderhoud producten
+4. Laat zien dat producten uit de database in de tabel staan
+5. Voeg een testproduct toe
+6. Wijzig het testproduct
+7. Verwijder het testproduct
+8. Herhaal eventueel kort voor categorieen en landen

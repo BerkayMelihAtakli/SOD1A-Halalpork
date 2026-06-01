@@ -26,14 +26,14 @@ $purchaselineid = intval($_POST['purchaselineid'] ?? 0);
 
 try {
     if ($action === 'regel') {
-        // Controleer of dit de laatste regel is
+       
         $sCnt = "SELECT COUNT(*) AS cnt FROM purchaseline WHERE purchaseid = :purchaseid";
         $oCnt = $db->prepare($sCnt);
         $oCnt->bindValue(':purchaseid', $purchaseid);
         $oCnt->execute();
         $aCnt = $oCnt->fetch(PDO::FETCH_ASSOC);
         if ($aCnt['cnt'] == 1) {
-            // Waarschuwing tonen
+        
             echo "<h2>Laatste product bij deze aankoop</h2>";
             echo "<p>Wilt u het verwijderen afbreken of wilt u de hele aankoop verwijderen?</p>";
             echo "<form action='pur-crud-del.php' method='get'><button type='submit'>Afbreken</button></form>";
@@ -44,7 +44,7 @@ try {
             echo "</form>";
             exit();
         } else {
-            // Verwijder alleen deze purchaseline
+         
             $sDel = "DELETE FROM purchaseline WHERE ID = :plID";
             $oDel = $db->prepare($sDel);
             $oDel->bindValue(':plID', $purchaselineid);
@@ -56,7 +56,7 @@ try {
     }
 
     if ($action === 'aankoop') {
-        // Verwijder alle purchaselines en de purchase
+       
         $db->beginTransaction();
         $sDelLines = "DELETE FROM purchaseline WHERE purchaseid = :purchaseid";
         $oDelLines = $db->prepare($sDelLines);

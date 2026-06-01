@@ -2,7 +2,7 @@
 session_start();
 require_once "dbconnect.php";
 
-// Alleen bereikbaar vanaf pur-crud-add.php
+
 if (!isset($_POST['submt-pur-add']) || !isset($_SESSION['chk_pur_add'])) {
     echo "<h2>Niet op de juiste manier gekomen.</h2>";
     echo "<p><a href='pur-crud-add.php'>Terug naar bestellen</a></p>";
@@ -25,7 +25,7 @@ if ($productid <= 0 || $quantity < 1) {
 }
 
 try {
-    // Stap 1: Purchase record aanmaken als nog niet in SESSION
+    
     if (!isset($_SESSION['purchase_id']) || empty($_SESSION['purchase_id'])) {
         $sIns = "INSERT INTO purchase (clientid, purchasedate, delivered) VALUES (:clientid, :purchasedate, 0)";
         $oIns = $db->prepare($sIns);
@@ -36,7 +36,7 @@ try {
         $_SESSION['purchase_id'] = $lastId;
     }
 
-    // Stap 2: Purchaseline aanmaken
+   
     $sPL = "INSERT INTO purchaseline (purchaseid, productid, price, quantity) VALUES (:purchaseid, :productid, :price, :quantity)";
     $oPL = $db->prepare($sPL);
     $oPL->bindValue(':purchaseid', $_SESSION['purchase_id']);
@@ -54,7 +54,7 @@ try {
     trigger_error($sMsg);
 }
 
-// laat de klant terugkeren
+
 header('Refresh: 3; url=pur-crud-add.php');
 exit();
 

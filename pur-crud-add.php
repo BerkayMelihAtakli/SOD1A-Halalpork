@@ -10,13 +10,13 @@
 session_start();
 require_once "dbconnect.php";
 
-// Alleen voor ingelogde klanten
+
 if (!isset($_SESSION["benJeErAl"]) || $_SESSION["benJeErAl"] !== true || !isset($_SESSION["SoortToegang"]) || $_SESSION["SoortToegang"] !== "Klant") {
 	echo "<h2>Alleen voor ingelogde klanten</h2>";
 	exit();
 }
 
-// Markeer dat we van het besteloverzicht komen
+
 $_SESSION["chk_pur_add"] = true;
 
 echo "<header class='spacebelowabove'>";
