@@ -1,0 +1,8 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(/c/wamp64/bin/mysql/mysql9.1.0/bin/mysql.exe -uroot halalpork -e ' *)",
+      "Bash(/c/wamp64/bin/mysql/mysql9.1.0/bin/mysql.exe -uroot halalpork -e \"SELECT COUNT\\(*\\) as total FROM client WHERE isadmin = 'J';\")"
+    ]
+  }
+}

@@ -1,57 +1,35 @@
 <?php
 require_once "dbconnect.php";
 
-// Categories with counts + lowest price
-$categories = $db->query("
-    SELECT c.ID, c.name,
-           COUNT(p.ID) AS total,
-           SUM(p.isactive = 'J') AS active,
-           MIN(CASE WHEN p.isactive = 'J' THEN p.price END) AS from_price
-    FROM category c
-    LEFT JOIN product p ON p.categoryid = c.ID
-    GROUP BY c.ID, c.name
-    ORDER BY c.name
+// Stats per group
+$groupStats = $db->query("
+    SELECT
+        SUM(categoryid IN (2,5,6,8,10) AND isactive='J') AS brood_count,
+        MIN(CASE WHEN categoryid IN (2,5,6,8,10) AND isactive='J' THEN price END) AS brood_from,
+        SUM(categoryid IN (3,4,7,9,11) AND isactive='J') AS broodjes_count,
+        MIN(CASE WHEN categoryid IN (3,4,7,9,11) AND isactive='J' THEN price END) AS broodjes_from,
+        SUM(categoryid = 1 AND isactive='J') AS gebak_count,
+        MIN(CASE WHEN categoryid = 1 AND isactive='J' THEN price END) AS gebak_from
+    FROM product
+")->fetch(PDO::FETCH_ASSOC);
+
+// Van de week: 1 product per group (highest price, active)
+$vanDeWeek = $db->query("
+    (SELECT p.productname, p.price, p.allergens, c.name AS category, 'brood' AS groep
+     FROM product p LEFT JOIN category c ON p.categoryid = c.ID
+     WHERE p.categoryid IN (2,5,6,8,10) AND p.isactive='J'
+     ORDER BY p.price DESC LIMIT 1)
+    UNION ALL
+    (SELECT p.productname, p.price, p.allergens, c.name AS category, 'broodjes' AS groep
+     FROM product p LEFT JOIN category c ON p.categoryid = c.ID
+     WHERE p.categoryid IN (3,4,7,9,11) AND p.isactive='J'
+     ORDER BY p.price DESC LIMIT 1)
+    UNION ALL
+    (SELECT p.productname, p.price, p.allergens, c.name AS category, 'gebak' AS groep
+     FROM product p LEFT JOIN category c ON p.categoryid = c.ID
+     WHERE p.categoryid = 1 AND p.isactive='J'
+     ORDER BY p.price DESC LIMIT 1)
 ")->fetchAll(PDO::FETCH_ASSOC);
-
-// Van de week: 4 active gebak products (highest price = premium)
-$featured = $db->query("
-    SELECT p.ID, p.productname, p.allergens, p.price,
-           c.name AS category, s.company AS supplier
-    FROM product p
-    LEFT JOIN category c ON p.categoryid = c.ID
-    LEFT JOIN supplier s ON p.supplierid = s.ID
-    WHERE p.isactive = 'J' AND p.categoryid = 1
-    ORDER BY p.price DESC
-    LIMIT 4
-")->fetchAll(PDO::FETCH_ASSOC);
-
-// All active products grouped (we'll group in PHP)
-$allProducts = $db->query("
-    SELECT p.ID, p.productname, p.ingredients, p.allergens, p.price, p.isactive,
-           c.ID AS cat_id, c.name AS category, s.company AS supplier
-    FROM product p
-    LEFT JOIN category c ON p.categoryid = c.ID
-    LEFT JOIN supplier s ON p.supplierid = s.ID
-    ORDER BY c.name, p.productname
-")->fetchAll(PDO::FETCH_ASSOC);
-
-// Group products by category
-$grouped = [];
-foreach ($allProducts as $p) {
-    $grouped[$p['cat_id']]['name']       = $p['category'];
-    $grouped[$p['cat_id']]['products'][] = $p;
-}
-
-// Icons per category slug (matched by keyword)
-function catIcon(string $name): string {
-    $n = mb_strtolower($name);
-    if (str_contains($n, 'gebak'))            return '<path stroke-linecap="round" stroke-linejoin="round" d="M12 2a5 5 0 0 1 5 5v1h1a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V10a2 2 0 0 1 2-2h1V7a5 5 0 0 1 5-5Z"/><path stroke-linecap="round" stroke-linejoin="round" d="M9 10V7a3 3 0 1 1 6 0v3"/>';
-    if (str_contains($n, 'krentenbollen'))    return '<circle cx="12" cy="12" r="8"/><circle cx="9" cy="11" r="1" fill="currentColor"/><circle cx="13" cy="10" r="1" fill="currentColor"/><circle cx="11" cy="14" r="1" fill="currentColor"/>';
-    if (str_contains($n, 'broodjes') || str_contains($n, 'bollen')) return '<ellipse cx="12" cy="12" rx="9" ry="6"/><path stroke-linecap="round" d="M6 12c0-2 2.7-4 6-4s6 2 6 4"/>';
-    if (str_contains($n, 'gevuld'))           return '<path stroke-linecap="round" stroke-linejoin="round" d="M4 12c0-4.418 3.582-8 8-8s8 3.582 8 8-3.582 8-8 8-8-3.582-8-8Z"/><path stroke-linecap="round" d="M8 12c0-2.2 1.8-4 4-4s4 1.8 4 4"/>';
-    // default bread loaf
-    return '<path stroke-linecap="round" stroke-linejoin="round" d="M3 11C3 7.686 7.03 5 12 5s9 2.686 9 6v1a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1v-1Z"/><path stroke-linecap="round" stroke-linejoin="round" d="M3 12v5a1 1 0 0 0 1 1h16a1 1 0 0 0 1-1v-5"/><path stroke-linecap="round" stroke-linejoin="round" d="M9 19v1m6-1v1"/>';
-}
 ?>
 <!DOCTYPE html>
 <html lang="nl">
@@ -61,255 +39,104 @@ function catIcon(string $name): string {
     <title>Assortiment — The Bread Company</title>
     <link rel="stylesheet" href="style.css">
     <style>
-        /* ─── Page hero ─── */
         .page-hero { border-bottom: 1px solid #ded6cc; }
-        .page-hero-inner {
-            display: grid;
-            grid-template-columns: 1fr auto;
-            align-items: center;
-            gap: 24px;
-            padding-top: 40px;
-            padding-bottom: 40px;
-        }
-        .page-hero-inner h1 { font-size: 46px; line-height: 1; margin: 10px 0 0; }
-        .page-hero-inner .intro-text { margin-top: 12px; max-width: 520px; }
-        .hero-meta {
-            display: flex;
-            flex-direction: column;
-            align-items: flex-end;
-            gap: 6px;
-            text-align: right;
-        }
-        .hero-meta-num {
-            font-family: Georgia, serif;
-            font-size: 42px;
-            font-weight: 700;
-            color: #d89a18;
-            line-height: 1;
-        }
-        .hero-meta-label { font-size: 11px; color: #6c5f53; }
+        .page-hero-inner { padding: 48px 0; }
+        .page-hero-inner h1 { font-size: 50px; line-height: 1; margin: 10px 0 12px; }
+        .page-hero-inner .intro-text { max-width: 520px; }
 
-        /* ─── Category nav strip ─── */
-        .cat-nav { background: #f5f1eb; border-bottom: 1px solid #ded6cc; position: sticky; top: 0; z-index: 100; }
-        .cat-nav-inner {
-            display: flex;
-            gap: 4px;
-            overflow-x: auto;
-            padding: 10px 0;
-            scrollbar-width: none;
-        }
-        .cat-nav-inner::-webkit-scrollbar { display: none; }
-        .cat-nav-btn {
-            display: inline-flex;
-            align-items: center;
-            gap: 7px;
-            padding: 7px 16px;
-            border-radius: 24px;
-            font-size: 12px;
-            font-weight: 600;
-            white-space: nowrap;
-            text-decoration: none;
-            color: #54463b;
-            border: 1px solid transparent;
-            transition: 0.15s;
-            flex-shrink: 0;
-        }
-        .cat-nav-btn svg { width: 14px; height: 14px; }
-        .cat-nav-btn:hover { background: #ede5da; color: #2b1b10; }
-        .cat-nav-btn.active { background: #d89a18; color: #fff; border-color: #d89a18; }
-
-        /* ─── Featured / Van de Week ─── */
-        .featured-section { border-bottom: 1px solid #ded6cc; background: #231209; }
-        .featured-inner { padding-top: 52px; padding-bottom: 52px; }
-        .featured-inner .eyebrow { color: #d89a18; }
-        .featured-inner > h2 { color: #f6efe6; font-size: 38px; margin: 10px 0 32px; }
-        .featured-grid {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 20px;
-        }
-        .featured-card {
+        /* Van de week */
+        .week-section { background: #231209; border-bottom: 1px solid #ded6cc; }
+        .week-inner { padding: 52px 0; }
+        .week-inner > .eyebrow { color: #d89a18; }
+        .week-inner > h2 { color: #f6efe6; font-size: 36px; margin: 10px 0 32px; }
+        .week-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+        .week-card {
             background: rgba(255,255,255,0.05);
             border: 1px solid rgba(255,255,255,0.1);
             border-radius: 12px;
-            overflow: hidden;
-            transition: transform 0.2s, box-shadow 0.2s;
-        }
-        .featured-card:hover { transform: translateY(-3px); box-shadow: 0 12px 28px rgba(0,0,0,0.3); }
-        .featured-card-top {
-            height: 110px;
-            background: linear-gradient(135deg, rgba(216,154,24,0.18), rgba(216,154,24,0.05));
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: #d89a18;
-        }
-        .featured-card-top svg { width: 48px; height: 48px; opacity: 0.7; }
-        .featured-card-body { padding: 16px; }
-        .featured-tag {
-            font-size: 10px;
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 0.07em;
-            color: #d89a18;
-        }
-        .featured-name {
-            font-family: Georgia, serif;
-            font-size: 16px;
-            font-weight: 700;
-            color: #f6efe6;
-            margin: 6px 0 4px;
-            line-height: 1.2;
-        }
-        .featured-supplier { font-size: 11px; color: #8a7b70; }
-        .featured-footer {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 10px 16px 14px;
-        }
-        .featured-price {
-            font-family: Georgia, serif;
-            font-size: 22px;
-            font-weight: 700;
-            color: #d89a18;
-        }
-        .badge-week {
-            font-size: 10px;
-            font-weight: 700;
-            padding: 3px 9px;
-            border-radius: 20px;
-            background: rgba(216,154,24,0.2);
-            color: #d89a18;
-            border: 1px solid rgba(216,154,24,0.35);
-        }
-
-        /* ─── Category sections ─── */
-        .catalog { padding-bottom: 64px; }
-
-        .cat-section { padding-top: 52px; border-top: 1px solid #ded6cc; }
-        .cat-section:first-child { border-top: 0; padding-top: 52px; }
-
-        .cat-section-header {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            margin-bottom: 24px;
-        }
-        .cat-section-title {
-            display: flex;
-            align-items: center;
-            gap: 14px;
-        }
-        .cat-icon-wrap {
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            background: #f7efe0;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: #d89a18;
-            flex-shrink: 0;
-        }
-        .cat-icon-wrap svg { width: 20px; height: 20px; }
-        .cat-section-header h2 { font-size: 28px; margin: 0; }
-        .cat-from-price { font-size: 12px; color: #6c5f53; }
-
-        /* ─── Product grid ─── */
-        .product-grid {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 16px;
-        }
-        .product-card {
-            background: #fff;
-            border: 1px solid #ede8e2;
-            border-radius: 10px;
+            padding: 24px;
             display: flex;
             flex-direction: column;
-            transition: box-shadow 0.2s, transform 0.2s;
+            gap: 10px;
         }
-        .product-card:hover { box-shadow: 0 6px 20px rgba(35,18,9,0.09); transform: translateY(-2px); }
-        .product-card.inactive { opacity: 0.5; }
+        .week-groep {
+            font-size: 10px; font-weight: 700; text-transform: uppercase;
+            letter-spacing: .07em; color: #d89a18;
+        }
+        .week-name {
+            font-family: Georgia, serif; font-size: 18px; font-weight: 700;
+            color: #f6efe6; line-height: 1.2;
+        }
+        .week-cat { font-size: 11px; color: #8a7b70; }
+        .week-footer { display: flex; align-items: center; justify-content: space-between; margin-top: 6px; }
+        .week-price { font-family: Georgia, serif; font-size: 24px; font-weight: 700; color: #d89a18; }
+        .week-badge {
+            font-size: 10px; font-weight: 700; padding: 3px 9px; border-radius: 20px;
+            background: rgba(216,154,24,0.2); color: #d89a18; border: 1px solid rgba(216,154,24,0.35);
+        }
 
-        .product-card-top {
-            height: 80px;
-            background: linear-gradient(135deg, #faf4e8, #f3ece0);
-            border-radius: 10px 10px 0 0;
+        /* Category cards */
+        .groups-section { padding: 56px 0 64px; }
+        .groups-section > .container > .eyebrow { margin-bottom: 10px; }
+        .groups-section > .container > h2 { font-size: 38px; margin: 0 0 36px; }
+        .groups-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
+
+        .group-card {
+            border: 1px solid #ded6cc;
+            border-radius: 14px;
+            overflow: hidden;
+            background: #fff;
+            display: flex;
+            flex-direction: column;
+            transition: box-shadow .2s, transform .2s;
+            text-decoration: none;
+            color: inherit;
+        }
+        .group-card:hover { box-shadow: 0 10px 28px rgba(35,18,9,.10); transform: translateY(-3px); }
+
+        .group-card-top {
+            height: 140px;
             display: flex;
             align-items: center;
             justify-content: center;
-            color: #d89a18;
+            flex-direction: column;
+            gap: 10px;
         }
-        .product-card-top svg { width: 36px; height: 36px; opacity: 0.5; }
+        .group-card-top.brood    { background: linear-gradient(135deg, #fdf3dc, #f5e6c0); }
+        .group-card-top.broodjes { background: linear-gradient(135deg, #f0f8e8, #dcefd0); }
+        .group-card-top.gebak    { background: linear-gradient(135deg, #fde8f0, #f5cee0); }
 
-        .product-card-body { padding: 14px 14px 0; flex: 1; }
-        .product-name {
-            font-family: Georgia, serif;
-            font-size: 15px;
-            font-weight: 700;
-            color: #2b1b10;
-            line-height: 1.2;
-            margin: 0 0 5px;
-        }
-        .product-supplier { font-size: 11px; color: #a89a8e; margin-bottom: 8px; }
-        .product-allergens {
-            font-size: 10.5px;
-            color: #7a6358;
-            line-height: 1.4;
-            padding: 6px 8px;
-            background: #fdf8f2;
-            border-radius: 5px;
-            border-left: 2px solid #e8d09a;
-            margin-bottom: 4px;
-        }
-        .allergen-label { font-weight: 700; color: #c0612a; }
+        .group-card-top svg { width: 52px; height: 52px; }
+        .group-card-top.brood    svg { color: #b87b1a; }
+        .group-card-top.broodjes svg { color: #4a7c35; }
+        .group-card-top.gebak    svg { color: #a8346a; }
 
-        .product-card-footer {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 10px 14px 12px;
-            margin-top: auto;
-        }
-        .product-price {
-            font-family: Georgia, serif;
-            font-size: 19px;
-            font-weight: 700;
-            color: #2b1b10;
-        }
-        .badge-ok {
-            font-size: 10px; font-weight: 700; padding: 2px 8px;
-            border-radius: 20px;
-            background: #f0faf1; color: #276b2e; border: 1px solid #b8e2bc;
-        }
-        .badge-off {
-            font-size: 10px; font-weight: 700; padding: 2px 8px;
-            border-radius: 20px;
-            background: #f5f5f5; color: #888; border: 1px solid #ddd;
-        }
+        .group-card-body { padding: 22px 22px 18px; flex: 1; }
+        .group-card-title { font-family: Georgia, serif; font-size: 24px; font-weight: 700; color: #2b1b10; margin: 0 0 8px; }
+        .group-card-desc { font-size: 13px; line-height: 1.55; color: #6c5f53; margin: 0; }
 
-        /* ─── Responsive ─── */
-        @media (max-width: 1100px) {
-            .featured-grid, .product-grid { grid-template-columns: repeat(3, 1fr); }
+        .group-card-footer {
+            display: flex; align-items: center; justify-content: space-between;
+            padding: 14px 22px; border-top: 1px solid #ede8e2;
         }
+        .group-meta { font-size: 12px; color: #6c5f53; }
+        .group-meta strong { color: #2b1b10; }
+        .group-link {
+            display: inline-flex; align-items: center; gap: 6px;
+            font-size: 13px; font-weight: 600; color: #d89a18;
+        }
+        .group-link svg { width: 16px; height: 16px; }
+
         @media (max-width: 900px) {
             .container { padding-left: 20px; padding-right: 20px; }
-            .page-hero-inner { grid-template-columns: 1fr; }
-            .hero-meta { align-items: flex-start; text-align: left; }
-            .featured-grid, .product-grid { grid-template-columns: repeat(2, 1fr); }
-        }
-        @media (max-width: 540px) {
-            .product-grid { grid-template-columns: 1fr; }
-            .featured-grid { grid-template-columns: 1fr; }
+            .week-grid, .groups-grid { grid-template-columns: 1fr; }
+            .page-hero-inner h1 { font-size: 36px; }
         }
     </style>
 </head>
 <body>
 <div class="page">
 
-    <!-- ─── Header ─── -->
     <header>
         <div class="topbar">
             <div class="container topbar-inner">
@@ -323,18 +150,17 @@ function catIcon(string $name): string {
                 </div>
                 <div class="topbar-item hide-mobile">
                     <svg class="small-icon" viewBox="0 0 24 24" fill="currentColor"><path d="M6.62 10.79a15.054 15.054 0 0 0 6.59 6.59l2.2-2.2a1 1 0 0 1 1-.24c1.12.37 2.33.57 3.59.57a1 1 0 0 1 1 1V20a1 1 0 0 1-1 1C10.06 21 3 13.94 3 5a1 1 0 0 1 1-1h3.5a1 1 0 0 1 1 1c0 1.26.2 2.47.57 3.59a1 1 0 0 1-.24 1l-2.2 2.2Z"/></svg>
-                    <span>Bel ons: 085 123 4567</span>
+                    <span>085 123 4567</span>
                 </div>
             </div>
         </div>
-
         <div class="navbar">
             <div class="container nav-inner">
-                <a href="index.php" class="logo" aria-label="The Bread Company home">
+                <a href="index.php" class="logo">
                     <svg class="logo-icon" viewBox="0 0 20 32" fill="currentColor"><path d="M10 0 3 5v4l7-5 7 5V5l-7-5Zm0 8-7 5v4l7-5 7 5v-4l-7-5Zm0 8-7 5v4l7-5 7 5v-4l-7-5Zm0 8-7 5v3h14v-3l-7-5Z"/></svg>
                     <span class="logo-text">The Bread<br>Company</span>
                 </a>
-                <nav class="main-nav" aria-label="Hoofdnavigatie">
+                <nav class="main-nav">
                     <ul class="main-menu">
                         <li class="main-item"><a href="index.php">Home</a></li>
                         <li class="main-item"><a href="#">Bedrijf</a>
@@ -345,43 +171,7 @@ function catIcon(string $name): string {
                                 <li><a href="stat-history.php" class="scndlvl">Geschiedenis</a></li>
                             </ul>
                         </li>
-                        <li class="main-item active"><a href="#">Overzicht</a>
-                            <ul>
-                                <li><a href="cat-crud-shw.php" class="scndlvl">Categorieën</a></li>
-                                <li><a href="cli-crud-shw.php" class="scndlvl">Klanten</a></li>
-                                <li><a href="sup-crud-shw.php" class="scndlvl">Leveranciers</a></li>
-                                <li><a href="pro-crud-shw.php" class="scndlvl">Produkten</a></li>
-                                <li><a href="pur-crud-shw.php" class="scndlvl">Aankopen</a></li>
-                                <li><a href="cou-crud-shw.php" class="scndlvl">Landen</a></li>
-                            </ul>
-                        </li>
-                        <li class="main-item"><a href="#">Informatie</a>
-                            <ul>
-                                <li><a href="#" class="scndlvl">Aantal</a>
-                                    <ul>
-                                        <li><a href="count-supl-per-country.php" class="thrdlvl">Lev per land</a></li>
-                                        <li><a href="count-prod-per-cat.php" class="thrdlvl">Prod per catagr</a></li>
-                                        <li><a href="count-purch-per-client.php" class="thrdlvl">Aankoop per klant</a></li>
-                                        <li><a href="count-purline-per-purch.php" class="thrdlvl">Regels per aankoop</a></li>
-                                        <li><a href="count-purch-per-prod.php" class="thrdlvl">Aankoop per prod</a></li>
-                                    </ul>
-                                </li>
-                                <li><a href="#" class="scndlvl">Gemiddeld</a>
-                                    <ul>
-                                        <li><a href="avg-prodprice-per-supl.php" class="thrdlvl">Prodprijs-lev</a></li>
-                                        <li><a href="avg-prodprice-per-cat.php" class="thrdlvl">Prodprijs-catgr</a></li>
-                                        <li><a href="total-price-per-purch.php" class="thrdlvl">Tot prijs-aankoop</a></li>
-                                    </ul>
-                                </li>
-                                <li><a href="#" class="scndlvl">Samengesteld</a>
-                                    <ul>
-                                        <li><a href="shw-purchdet-per-prod.php" class="thrdlvl">Aankoopdet.-prod</a></li>
-                                        <li><a href="shw-prod-per-supl.php" class="thrdlvl">Produkt-lev</a></li>
-                                        <li><a href="shw-prod-per-cat.php" class="thrdlvl">Produkt-cat</a></li>
-                                    </ul>
-                                </li>
-                            </ul>
-                        </li>
+                        <li class="main-item active"><a href="pro-crud-shw.php">Assortiment</a></li>
                         <li class="main-item"><a href="#">Onderhoud</a>
                             <ul>
                                 <li><a href="cat-crud-get.php" class="scndlvl">Categorieen</a></li>
@@ -400,159 +190,106 @@ function catIcon(string $name): string {
     </header>
 
     <main>
-
-        <!-- ─── Page hero ─── -->
+        <!-- Hero -->
         <section class="page-hero section-border">
             <div class="container page-hero-inner">
-                <div>
-                    <p class="eyebrow">Ons assortiment</p>
-                    <h1>Dagelijks vers uit de oven</h1>
-                    <p class="intro-text">
-                        Van knapperige baguettes tot ambachtelijke volkoren broden en verwennerij uit de banketbakkerij —
-                        alles met liefde gemaakt, elke dag opnieuw.
-                    </p>
-                </div>
-                <div class="hero-meta">
-                    <span class="hero-meta-num"><?= count($allProducts) ?></span>
-                    <span class="hero-meta-label">producten in ons assortiment</span>
-                    <span class="hero-meta-num" style="margin-top:16px"><?= count($categories) ?></span>
-                    <span class="hero-meta-label">categorieën</span>
+                <p class="eyebrow">Ons assortiment</p>
+                <h1>Wat mag het zijn vandaag?</h1>
+                <p class="intro-text">Kies uit onze versgebakken broden, knapperige broodjes of heerlijk gebak. Elke dag gemaakt met eerlijke ingrediënten en ambacht.</p>
+            </div>
+        </section>
+
+        <!-- Van de week -->
+        <section class="week-section section-border">
+            <div class="container week-inner">
+                <p class="eyebrow">Uitgelicht</p>
+                <h2>Van de week</h2>
+                <div class="week-grid">
+                    <?php foreach ($vanDeWeek as $p): ?>
+                    <div class="week-card">
+                        <span class="week-groep">&#9733; Aanrader — <?= htmlspecialchars(ucfirst($p['groep'])) ?></span>
+                        <p class="week-name"><?= htmlspecialchars($p['productname']) ?></p>
+                        <span class="week-cat"><?= htmlspecialchars(ucfirst($p['category'])) ?></span>
+                        <div class="week-footer">
+                            <span class="week-price">€<?= number_format((float)$p['price'], 2, ',', '') ?></span>
+                            <span class="week-badge">Van de week</span>
+                        </div>
+                    </div>
+                    <?php endforeach; ?>
                 </div>
             </div>
         </section>
 
-        <!-- ─── Sticky category nav ─── -->
-        <div class="cat-nav section-border">
-            <div class="container cat-nav-inner">
-                <a href="#van-de-week" class="cat-nav-btn active">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
-                    </svg>
-                    Van de week
-                </a>
-                <?php foreach ($categories as $cat): ?>
-                <a href="#cat-<?= (int)$cat['ID'] ?>" class="cat-nav-btn">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
-                        <?= catIcon($cat['name']) ?>
-                    </svg>
-                    <?= htmlspecialchars(ucfirst($cat['name'])) ?>
-                </a>
-                <?php endforeach; ?>
-            </div>
-        </div>
+        <!-- Category groups -->
+        <section class="groups-section">
+            <div class="container">
+                <p class="eyebrow">Categorieën</p>
+                <h2>Waar bent u naar op zoek?</h2>
+                <div class="groups-grid">
 
-        <!-- ─── Van de week ─── -->
-        <section class="featured-section" id="van-de-week">
-            <div class="container featured-inner">
-                <p class="eyebrow">Uitgelicht</p>
-                <h2>Van de week</h2>
-                <div class="featured-grid">
-                    <?php foreach ($featured as $p): ?>
-                    <article class="featured-card">
-                        <div class="featured-card-top">
+                    <!-- Brood -->
+                    <a href="pro-brood.php" class="group-card">
+                        <div class="group-card-top brood">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M3 11C3 7.686 7.03 5 12 5s9 2.686 9 6v1a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1v-1Z"/>
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M3 12v5a1 1 0 0 0 1 1h16a1 1 0 0 0 1-1v-5"/>
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M8 18v1m8-1v1"/>
+                            </svg>
+                        </div>
+                        <div class="group-card-body">
+                            <h3 class="group-card-title">Brood</h3>
+                            <p class="group-card-desc">Volkoren, wit, bruin, buitenlands of gevuld — ons dagelijks vers gebakken brood voor elk smaakvoor­keur.</p>
+                        </div>
+                        <div class="group-card-footer">
+                            <span class="group-meta"><strong><?= (int)$groupStats['brood_count'] ?></strong> producten &nbsp;·&nbsp; v.a. €<?= number_format((float)$groupStats['brood_from'], 2, ',', '') ?></span>
+                            <span class="group-link">Bekijk <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M5 12h14m-5-7 7 7-7 7"/></svg></span>
+                        </div>
+                    </a>
+
+                    <!-- Broodjes & Bollen -->
+                    <a href="pro-broodjes.php" class="group-card">
+                        <div class="group-card-top broodjes">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4">
+                                <ellipse cx="12" cy="12" rx="9" ry="5.5"/>
+                                <path stroke-linecap="round" d="M6 12c0-2 2.7-3.5 6-3.5s6 1.5 6 3.5"/>
+                                <circle cx="9" cy="11" r=".8" fill="currentColor"/>
+                                <circle cx="12" cy="10.2" r=".8" fill="currentColor"/>
+                                <circle cx="15" cy="11" r=".8" fill="currentColor"/>
+                            </svg>
+                        </div>
+                        <div class="group-card-body">
+                            <h3 class="group-card-title">Broodjes &amp; Bollen</h3>
+                            <p class="group-card-desc">Witte en bruine broodjes, krentenbollen en speciale varianten — perfect voor lunch of tussendoor.</p>
+                        </div>
+                        <div class="group-card-footer">
+                            <span class="group-meta"><strong><?= (int)$groupStats['broodjes_count'] ?></strong> producten &nbsp;·&nbsp; v.a. €<?= number_format((float)$groupStats['broodjes_from'], 2, ',', '') ?></span>
+                            <span class="group-link">Bekijk <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M5 12h14m-5-7 7 7-7 7"/></svg></span>
+                        </div>
+                    </a>
+
+                    <!-- Gebak -->
+                    <a href="pro-gebak.php" class="group-card">
+                        <div class="group-card-top gebak">
                             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4">
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M12 2a5 5 0 0 1 5 5v1h1a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V10a2 2 0 0 1 2-2h1V7a5 5 0 0 1 5-5Z"/>
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M9 10V7a3 3 0 1 1 6 0v3"/>
                             </svg>
                         </div>
-                        <div class="featured-card-body">
-                            <span class="featured-tag"><?= htmlspecialchars(ucfirst($p['category'])) ?></span>
-                            <h3 class="featured-name"><?= htmlspecialchars($p['productname']) ?></h3>
-                            <p class="featured-supplier"><?= htmlspecialchars($p['supplier'] ?? '') ?></p>
+                        <div class="group-card-body">
+                            <h3 class="group-card-title">Gebak &amp; Zoet</h3>
+                            <p class="group-card-desc">Taarten, wafels, chocoladecreaties en ambachtelijk gebak voor elk moment dat extra verwennerij verdient.</p>
                         </div>
-                        <div class="featured-footer">
-                            <span class="featured-price">€<?= number_format((float)$p['price'], 2, ',', '') ?></span>
-                            <span class="badge-week">&#9733; Van de week</span>
+                        <div class="group-card-footer">
+                            <span class="group-meta"><strong><?= (int)$groupStats['gebak_count'] ?></strong> producten &nbsp;·&nbsp; v.a. €<?= number_format((float)$groupStats['gebak_from'], 2, ',', '') ?></span>
+                            <span class="group-link">Bekijk <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M5 12h14m-5-7 7 7-7 7"/></svg></span>
                         </div>
-                    </article>
-                    <?php endforeach; ?>
+                    </a>
+
                 </div>
             </div>
         </section>
-
-        <!-- ─── Products by category ─── -->
-        <div class="catalog container">
-            <?php foreach ($grouped as $catId => $group): ?>
-            <?php
-                $catMeta = array_values(array_filter($categories, fn($c) => (int)$c['ID'] === (int)$catId));
-                $catMeta = $catMeta[0] ?? null;
-            ?>
-            <section class="cat-section" id="cat-<?= (int)$catId ?>">
-                <div class="cat-section-header">
-                    <div class="cat-section-title">
-                        <div class="cat-icon-wrap">
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
-                                <?= catIcon($group['name']) ?>
-                            </svg>
-                        </div>
-                        <h2><?= htmlspecialchars(ucfirst($group['name'])) ?></h2>
-                    </div>
-                    <?php if ($catMeta && $catMeta['from_price']): ?>
-                    <span class="cat-from-price">
-                        <?= (int)$catMeta['active'] ?> producten &nbsp;·&nbsp; vanaf
-                        <strong>€<?= number_format((float)$catMeta['from_price'], 2, ',', '') ?></strong>
-                    </span>
-                    <?php endif; ?>
-                </div>
-
-                <div class="product-grid">
-                    <?php foreach ($group['products'] as $p): ?>
-                    <article class="product-card<?= $p['isactive'] === 'N' ? ' inactive' : '' ?>">
-                        <div class="product-card-top">
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4">
-                                <?= catIcon($group['name']) ?>
-                            </svg>
-                        </div>
-                        <div class="product-card-body">
-                            <h3 class="product-name"><?= htmlspecialchars($p['productname']) ?></h3>
-                            <p class="product-supplier"><?= htmlspecialchars($p['supplier'] ?? '—') ?></p>
-                            <?php
-                                $allerg = trim($p['allergens'] ?? '');
-                                if ($allerg !== ''):
-                            ?>
-                            <div class="product-allergens">
-                                <span class="allergen-label">Allergenen: </span><?= htmlspecialchars($allerg) ?>
-                            </div>
-                            <?php endif; ?>
-                        </div>
-                        <div class="product-card-footer">
-                            <span class="product-price">€<?= number_format((float)$p['price'], 2, ',', '') ?></span>
-                            <?php if ($p['isactive'] === 'J'): ?>
-                                <span class="badge-ok">Beschikbaar</span>
-                            <?php else: ?>
-                                <span class="badge-off">Niet actief</span>
-                            <?php endif; ?>
-                        </div>
-                    </article>
-                    <?php endforeach; ?>
-                </div>
-            </section>
-            <?php endforeach; ?>
-        </div>
-
     </main>
 
 </div>
-
-<script>
-    // Highlight active category in sticky nav on scroll
-    const sections = document.querySelectorAll('[id^="cat-"], #van-de-week');
-    const navBtns  = document.querySelectorAll('.cat-nav-btn');
-
-    const observer = new IntersectionObserver(entries => {
-        entries.forEach(e => {
-            if (e.isIntersecting) {
-                navBtns.forEach(b => b.classList.remove('active'));
-                const active = document.querySelector(`.cat-nav-btn[href="#${e.target.id}"]`);
-                if (active) {
-                    active.classList.add('active');
-                    active.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
-                }
-            }
-        });
-    }, { threshold: 0.25 });
-
-    sections.forEach(s => observer.observe(s));
-</script>
 </body>
 </html>

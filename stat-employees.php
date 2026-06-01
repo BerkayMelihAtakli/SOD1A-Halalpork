@@ -1,9 +1,10 @@
 <?php
 require_once "dbconnect.php";
 
-// Employees = clients with admin rights
+// Employees = clients with admin rights — all available fields from DB
 $stmtEmployees = $db->query("
-    SELECT c.id, c.first_name, c.last_name, c.email, c.city, c.state, co.name AS country
+    SELECT c.id, c.first_name, c.last_name, c.email,
+           c.telephone, c.adress, c.zipcode, c.city, c.state, co.name AS country
     FROM client c
     LEFT JOIN country co ON c.country = co.idcountry
     WHERE c.isadmin = 'J'
@@ -135,7 +136,15 @@ $stats = $db->query("
         }
 
         .emp-name { font-weight: 600; }
-        .emp-email { font-size: 12px; color: #6c5f53; margin-top: 2px; }
+        .emp-sub { font-size: 11px; color: #6c5f53; margin-top: 2px; }
+
+        .contact-cell { display: flex; flex-direction: column; gap: 2px; }
+        .contact-phone { font-size: 13px; color: #2b1b10; }
+        .contact-email { font-size: 11px; color: #6c5f53; }
+
+        .addr-cell { display: flex; flex-direction: column; gap: 2px; font-size: 13px; }
+        .addr-street { color: #2b1b10; }
+        .addr-city { font-size: 11px; color: #6c5f53; }
 
         .badge {
             display: inline-block;
@@ -160,7 +169,7 @@ $stats = $db->query("
             .page-hero-inner h1 { font-size: 34px; }
             .stats-grid { grid-template-columns: repeat(2, 1fr); }
             .stat-item:nth-child(3) { border-left: 0; }
-            .col-city, .col-country { display: none; }
+            .col-addr, .col-country { display: none; }
         }
     </style>
 </head>
@@ -316,8 +325,9 @@ $stats = $db->query("
                         <thead>
                             <tr>
                                 <th>Naam</th>
-                                <th class="col-city">Stad</th>
-                                <th class="col-country">Land</th>
+                                <th>Contact</th>
+                                <th class="col-addr">Adres</th>
+                                <th class="col-addr">Provincie / Land</th>
                                 <th>Rol</th>
                             </tr>
                         </thead>
@@ -336,12 +346,30 @@ $stats = $db->query("
                                             <div class="emp-name">
                                                 <?= htmlspecialchars($emp['first_name'] . ' ' . $emp['last_name']) ?>
                                             </div>
-                                            <div class="emp-email"><?= htmlspecialchars($emp['email'] ?? '') ?></div>
+                                            <div class="emp-sub">#<?= (int)$emp['id'] ?></div>
                                         </div>
                                     </div>
                                 </td>
-                                <td class="col-city"><?= htmlspecialchars($emp['city'] ?? '—') ?></td>
-                                <td class="col-country"><?= htmlspecialchars($emp['country'] ?? '—') ?></td>
+                                <td>
+                                    <div class="contact-cell">
+                                        <span class="contact-phone"><?= htmlspecialchars($emp['telephone'] ?? '—') ?></span>
+                                        <span class="contact-email"><?= htmlspecialchars($emp['email'] ?? '—') ?></span>
+                                    </div>
+                                </td>
+                                <td class="col-addr">
+                                    <div class="addr-cell">
+                                        <span class="addr-street">
+                                            <?= htmlspecialchars(trim(($emp['adress'] ?? '') . ' ' . ($emp['zipcode'] ?? ''))) ?: '—' ?>
+                                        </span>
+                                        <span class="addr-city"><?= htmlspecialchars($emp['city'] ?? '—') ?></span>
+                                    </div>
+                                </td>
+                                <td class="col-addr">
+                                    <div class="addr-cell">
+                                        <span class="addr-street"><?= htmlspecialchars($emp['state'] ?? '—') ?></span>
+                                        <span class="addr-city"><?= htmlspecialchars($emp['country'] ?? '—') ?></span>
+                                    </div>
+                                </td>
                                 <td><span class="badge">Beheerder</span></td>
                             </tr>
                             <?php endforeach; ?>
