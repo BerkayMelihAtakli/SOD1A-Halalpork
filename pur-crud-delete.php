@@ -10,7 +10,7 @@
 session_start();
 require_once "dbconnect.php";
 
-if (!isset($_SESSION["benJeErAl"]) || $_SESSION["benJeErAl"] !== true || $_SESSION["SoortToegang"] !== "Beheer") {
+if (!isset($_SESSION["benJeErAl"]) || $_SESSION["benJeErAl"] !== true || !isset($_SESSION["SoortToegang"]) || $_SESSION["SoortToegang"] !== "Beheer") {
     echo "<h2>Alleen voor ingelogde beheerders</h2>";
     exit();
 }
@@ -26,14 +26,25 @@ $purchaselineid = intval($_POST['purchaselineid'] ?? 0);
 
 try {
     if ($action === 'regel') {
-       
+        $sVerify = "SELECT COUNT(*) AS cnt FROM purchaseline pl JOIN purchase pu ON pl.purchaseid = pu.ID WHERE pl.ID = :plID AND pu.ID = :purchaseid AND pu.delivered = 0";
+        $oVerify = $db->prepare($sVerify);
+        $oVerify->bindValue(':plID', $purchaselineid);
+        $oVerify->bindValue(':purchaseid', $purchaseid);
+        $oVerify->execute();
+        $aVerify = $oVerify->fetch(PDO::FETCH_ASSOC);
+
+        if (!$aVerify || $aVerify['cnt'] == 0) {
+            echo "<h2>Niet gevonden of kan niet worden verwijderd</h2>";
+            echo "<p><a href='pur-crud-del.php'>Terug</a></p>";
+            exit();
+        }
+
         $sCnt = "SELECT COUNT(*) AS cnt FROM purchaseline WHERE purchaseid = :purchaseid";
         $oCnt = $db->prepare($sCnt);
         $oCnt->bindValue(':purchaseid', $purchaseid);
         $oCnt->execute();
         $aCnt = $oCnt->fetch(PDO::FETCH_ASSOC);
         if ($aCnt['cnt'] == 1) {
-        
             echo "<h2>Laatste product bij deze aankoop</h2>";
             echo "<p>Wilt u het verwijderen afbreken of wilt u de hele aankoop verwijderen?</p>";
             echo "<form action='pur-crud-del.php' method='get'><button type='submit'>Afbreken</button></form>";
@@ -44,7 +55,6 @@ try {
             echo "</form>";
             exit();
         } else {
-         
             $sDel = "DELETE FROM purchaseline WHERE ID = :plID";
             $oDel = $db->prepare($sDel);
             $oDel->bindValue(':plID', $purchaselineid);
@@ -56,7 +66,18 @@ try {
     }
 
     if ($action === 'aankoop') {
-       
+        $sVerifyPurchase = "SELECT COUNT(*) AS cnt FROM purchase WHERE ID = :purchaseid AND delivered = 0";
+        $oVerifyPurchase = $db->prepare($sVerifyPurchase);
+        $oVerifyPurchase->bindValue(':purchaseid', $purchaseid);
+        $oVerifyPurchase->execute();
+        $aVerifyPurchase = $oVerifyPurchase->fetch(PDO::FETCH_ASSOC);
+
+        if (!$aVerifyPurchase || $aVerifyPurchase['cnt'] == 0) {
+            echo "<h2>Aankoop niet gevonden of al afgeleverd</h2>";
+            echo "<p><a href='pur-crud-del.php'>Terug</a></p>";
+            exit();
+        }
+
         $db->beginTransaction();
         $sDelLines = "DELETE FROM purchaseline WHERE purchaseid = :purchaseid";
         $oDelLines = $db->prepare($sDelLines);

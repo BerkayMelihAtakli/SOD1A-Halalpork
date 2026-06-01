@@ -9,7 +9,7 @@ if (!isset($_POST['submt-pur-add']) || !isset($_SESSION['chk_pur_add'])) {
     exit();
 }
 
-if (!isset($_SESSION["benJeErAl"]) || $_SESSION["benJeErAl"] !== true || $_SESSION["SoortToegang"] !== "Klant") {
+if (!isset($_SESSION["benJeErAl"]) || $_SESSION["benJeErAl"] !== true || !isset($_SESSION["SoortToegang"]) || $_SESSION["SoortToegang"] !== "Klant") {
     echo "<h2>Alleen voor ingelogde klanten</h2>";
     exit();
 }
@@ -25,7 +25,20 @@ if ($productid <= 0 || $quantity < 1) {
 }
 
 try {
-    
+    $sCheck = "SELECT price FROM product WHERE ID = :productid AND isactive = 'J'";
+    $oCheck = $db->prepare($sCheck);
+    $oCheck->bindValue(':productid', $productid);
+    $oCheck->execute();
+    $aCheck = $oCheck->fetch(PDO::FETCH_ASSOC);
+
+    if (!$aCheck) {
+        echo "<h2>Product niet beschikbaar</h2>";
+        echo "<p><a href='pur-crud-add.php'>Terug</a></p>";
+        exit();
+    }
+
+    $price = floatval($aCheck['price']);
+
     if (!isset($_SESSION['purchase_id']) || empty($_SESSION['purchase_id'])) {
         $sIns = "INSERT INTO purchase (clientid, purchasedate, delivered) VALUES (:clientid, :purchasedate, 0)";
         $oIns = $db->prepare($sIns);
@@ -36,7 +49,8 @@ try {
         $_SESSION['purchase_id'] = $lastId;
     }
 
-   
+    unset($_SESSION['chk_pur_add']);
+
     $sPL = "INSERT INTO purchaseline (purchaseid, productid, price, quantity) VALUES (:purchaseid, :productid, :price, :quantity)";
     $oPL = $db->prepare($sPL);
     $oPL->bindValue(':purchaseid', $_SESSION['purchase_id']);
@@ -54,8 +68,6 @@ try {
     trigger_error($sMsg);
 }
 
-
-header('Refresh: 3; url=pur-crud-add.php');
 exit();
 
 ?>

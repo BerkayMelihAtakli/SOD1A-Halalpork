@@ -10,7 +10,7 @@
 session_start();
 require_once "dbconnect.php";
 
-if (!isset($_SESSION["benJeErAl"]) || $_SESSION["benJeErAl"] !== true || $_SESSION["SoortToegang"] !== "Klant") {
+if (!isset($_SESSION["benJeErAl"]) || $_SESSION["benJeErAl"] !== true || !isset($_SESSION["SoortToegang"]) || $_SESSION["SoortToegang"] !== "Klant") {
     echo "<h2>Alleen voor ingelogde klanten</h2>";
     exit();
 }
@@ -29,12 +29,13 @@ if ($newQuantity < 1) {
 }
 
 try {
-    $sQ = "SELECT pl.quantity, pr.productname FROM purchaseline pl JOIN product pr ON pl.productid = pr.ID WHERE pl.ID = :plID";
+    $sQ = "SELECT pl.quantity, pr.productname FROM purchaseline pl JOIN purchase pu ON pl.purchaseid = pu.ID JOIN product pr ON pl.productid = pr.ID WHERE pl.ID = :plID AND pu.clientid = :clientid AND pu.delivered = 0";
     $oS = $db->prepare($sQ);
     $oS->bindValue(':plID', $plID);
+    $oS->bindValue(':clientid', $_SESSION['welkNummerIsDit']);
     $oS->execute();
     if ($oS->rowCount() != 1) {
-        echo "<p>Purchaseline niet gevonden.</p><p><a href='pur-crud-upd.php'>Terug</a></p>";
+        echo "<p>Purchaseline niet gevonden of kan niet worden gewijzigd.</p><p><a href='pur-crud-upd.php'>Terug</a></p>";
         exit();
     }
     $a = $oS->fetch(PDO::FETCH_ASSOC);
