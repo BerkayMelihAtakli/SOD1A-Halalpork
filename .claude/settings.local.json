@@ -2,7 +2,10 @@
   "permissions": {
     "allow": [
       "Bash(/c/wamp64/bin/mysql/mysql9.1.0/bin/mysql.exe -uroot halalpork -e ' *)",
-      "Bash(/c/wamp64/bin/mysql/mysql9.1.0/bin/mysql.exe -uroot halalpork -e \"SELECT COUNT\\(*\\) as total FROM client WHERE isadmin = 'J';\")"
+      "Bash(/c/wamp64/bin/mysql/mysql9.1.0/bin/mysql.exe -uroot halalpork -e \"SELECT COUNT\\(*\\) as total FROM client WHERE isadmin = 'J';\")",
+      "Bash(php \"c:\\\\wamp64\\\\www\\\\SOD1A-Halalpork\\\\scripts\\\\generate_sitemap_bezoeker.php\")",
+      "PowerShell(& \"C:\\\\wamp64\\\\bin\\\\php\\\\php8.2.28\\\\php.exe\" \"c:\\\\wamp64\\\\www\\\\SOD1A-Halalpork\\\\scripts\\\\generate_sitemap_bezoeker.php\")",
+      "PowerShell(& \"C:\\\\wamp64\\\\bin\\\\php\\\\php8.2.26\\\\php.exe\" \"c:\\\\wamp64\\\\www\\\\SOD1A-Halalpork\\\\scripts\\\\generate_sitemap_bezoeker.php\")"
     ]
   }
 }
