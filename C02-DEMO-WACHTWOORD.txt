@@ -1,0 +1,13 @@
+Demo wachtwoord fix
+
+Als je op 'Login als klant' klikt, wordt het wachtwoord van die demo-klant automatisch gezet naar:
+
+halalpork123
+
+Daarna kun je op change-password.php invullen:
+
+Huidig wachtwoord: halalpork123
+Nieuw wachtwoord: test1234
+Herhaal nieuw wachtwoord: test1234
+
+Dit is gedaan omdat de originele database hashes bevat waarvan het normale wachtwoord niet bekend is.
