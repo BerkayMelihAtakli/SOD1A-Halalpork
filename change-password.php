@@ -1,9 +1,9 @@
 <?php
+ob_start();
 session_start();
 require_once 'dbconnect.php';
 require_once 'product_helpers.php';
 
-render_header('Wachtwoord wijzigen');
 require_client();
 
 $errors = [];
@@ -13,8 +13,10 @@ $stmt->execute([(int)$_SESSION['welkNummerIsDit']]);
 $client = $stmt->fetch(PDO::FETCH_ASSOC);
 
 if (!$client) {
+    render_header('Wachtwoord wijzigen');
     echo '<main><h2>Geen toegang</h2><p>Alleen een ingelogde klant kan zijn wachtwoord wijzigen.</p><p><a href="login.php">Naar login</a></p></main>';
     render_footer();
+    ob_end_flush();
     exit();
 }
 
@@ -49,6 +51,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         exit();
     }
 }
+
+render_header('Wachtwoord wijzigen');
 ?>
 <main class="centering">
     <h2>Wachtwoord wijzigen</h2>
@@ -80,4 +84,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         </p>
     </form>
 </main>
-<?php render_footer(); ?>
+<?php
+render_footer();
+ob_end_flush();
+?>
