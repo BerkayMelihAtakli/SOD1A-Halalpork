@@ -3,7 +3,7 @@ session_start();
 require_once 'dbconnect.php';
 
 try {
-    $stmt = $db->prepare("SELECT id, first_name, last_name FROM client WHERE isadmin = 'J' ORDER BY id LIMIT 1");
+    $stmt = $db->prepare("SELECT id, first_name, last_name FROM client WHERE isadmin = 'J' AND id <> 0 ORDER BY id LIMIT 1");
     $stmt->execute();
     $admin = $stmt->fetch(PDO::FETCH_ASSOC);
 

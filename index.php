@@ -127,8 +127,17 @@ $features = [
                                 <li><a href="cli-crud-get.php" class="scndlvl">Klanten</a></li>
                                 <li><a href="sup-crud-get.php" class="scndlvl">Leveranciers</a></li>
                                 <li><a href="pro-crud-get.php" class="scndlvl">Producten</a></li>
+                                <li><a href="pro-active-get.php" class="scndlvl">Producten actief/inactief</a></li>
                                 <li><a href="pur-crud-get.php" class="scndlvl">Aankopen</a></li>
                                 <li><a href="cou-crud-get.php" class="scndlvl">Landen</a></li>
+                            </ul>
+                        </li>
+
+                        <li class="main-item"><a href="#">Account</a>
+                            <ul>
+                                <li><a href="login.php" class="scndlvl">Login</a></li>
+                                <li><a href="change-password.php" class="scndlvl">Wachtwoord wijzigen</a></li>
+                                <li><a href="logout.php" class="scndlvl">Uitloggen</a></li>
                             </ul>
                         </li>
                     </ul>
@@ -140,6 +149,9 @@ $features = [
     </header>
 
     <main>
+        <?php if (isset($_GET['msg'])) { ?>
+            <div class="homepage-message"><?php echo htmlspecialchars($_GET['msg'], ENT_QUOTES, 'UTF-8'); ?></div>
+        <?php } ?>
         <section class="hero section-border">
             <div class="container hero-grid">
                 <div class="hero-content">

@@ -14,6 +14,25 @@ function require_admin() {
     }
 }
 
+
+function is_client() {
+    return isset($_SESSION['SoortToegang']) && $_SESSION['SoortToegang'] === 'Klant';
+}
+
+function require_client() {
+    if (!is_client() || !isset($_SESSION['welkNummerIsDit']) || (int)$_SESSION['welkNummerIsDit'] <= 0) {
+        echo '<main><h2>Geen toegang</h2><p>Deze pagina is alleen voor ingelogde klanten.</p><p><a href="login.php">Login als klant</a> | <a href="index.php">Terug naar home</a></p></main>';
+        exit();
+    }
+}
+
+function active_text($value) {
+    if ($value === 'J') {
+        return 'Actief';
+    }
+    return 'Inactief';
+}
+
 function render_header($title) {
     echo '<!DOCTYPE html><html lang="nl"><head><meta charset="UTF-8"><title>' . h($title) . '</title><link rel="stylesheet" type="text/css" href="company.css"></head><body>';
     include 'nav.html';

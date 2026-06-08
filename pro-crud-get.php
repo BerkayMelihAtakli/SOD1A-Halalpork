@@ -16,7 +16,7 @@ require_admin();
         <input type="submit" name="submt-sel-prod-add" value="Product toevoegen">
     </form>
     <p>&nbsp;</p>
-    <p><a href="pro-crud-shw01.php">Bekijk inactieve producten</a> | <a href="pro-crud-shw02.php">Bekijk alle producten</a></p>
+    <p><a href="pro-crud-shw01.php">Bekijk inactieve producten</a> | <a href="pro-crud-shw02.php">Bekijk alle producten</a> | <a href="pro-active-get.php">Producten actief/inactief zetten</a></p>
     <table class="tabledisp2">
         <thead><tr><td>ID</td><td>Product</td><td>Prijs</td><td>Categorie</td><td>Leverancier</td><td>Actief</td><td>Acties</td></tr></thead>
         <tbody>
@@ -36,7 +36,7 @@ require_admin();
             echo '<td>' . h($row['categoryname']) . '</td>';
             echo '<td>' . h($row['company']) . '</td>';
             echo '<td>' . h($row['isactive']) . '</td>';
-            echo '<td><button type="submit" formaction="pro-crud-upd.php">Wijzigen</button> <button type="submit" formaction="pro-crud-del.php">Verwijderen</button></td>';
+            echo '<td><button type="submit" formaction="pro-crud-upd.php">Wijzigen</button> <button type="submit" formaction="pro-crud-del.php">Verwijderen</button> <button type="submit" formaction="pro-active-confirm.php">Actief/Inactief</button></td>';
             echo '</form></tr>';
         }
         ?>
