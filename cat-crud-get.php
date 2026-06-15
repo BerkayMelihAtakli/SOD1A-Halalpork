@@ -1,47 +1,29 @@
 <?php
 session_start();
-require_once 'db.php';
-
-if (!isset($_SESSION['role']) || $_SESSION['role'] !== 'admin') {
-    header('Location: login.php');
-    exit;
-}
-
-$stmt = $pdo->query("SELECT * FROM category ORDER BY name");
-$categories = $stmt->fetchAll(PDO::FETCH_ASSOC);
-
-$message = $_SESSION['message'] ?? '';
-unset($_SESSION['message']);
+require_once 'dbconnect.php';
+require_once 'category_country_helpers.php';
+render_header('Onderhoud categorieën');
+require_admin();
 ?>
-<!DOCTYPE html>
-<html lang="nl">
-<head><meta charset="UTF-8"><title>Onderhoud categorieën</title></head>
-<body>
-<h1>Onderhoud categorieën</h1>
-
-<?php if ($message): ?>
-    <p style="color:green;"><?= htmlspecialchars($message) ?></p>
-<?php endif; ?>
-
-<a href="cat-crud-add.php"><button>Category toevoegen</button></a>
-<br><br>
-
-<table border="1" cellpadding="8">
-    <tr>
-        <th>ID</th>
-        <th>Naam</th>
-        <th>Acties</th>
-    </tr>
-    <?php foreach ($categories as $cat): ?>
-    <tr>
-        <td><?= htmlspecialchars($cat['id']) ?></td>
-        <td><?= htmlspecialchars($cat['name']) ?></td>
-        <td>
-            <a href="cat-crud-upd.php?id=<?= $cat['id'] ?>"><button>Wijzigen</button></a>
-            <a href="cat-crud-del.php?id=<?= $cat['id'] ?>"><button>Verwijderen</button></a>
-        </td>
-    </tr>
-    <?php endforeach; ?>
-</table>
-</body>
-</html>
+<main class="centering">
+    <h2>Onderhoud categorieën</h2>
+    <?php if (isset($_GET['msg'])) { echo '<p><strong>' . h($_GET['msg']) . '</strong></p>'; } ?>
+    <form action="cat-crud-add.php" method="post"><input type="submit" value="Category toevoegen"></form>
+    <p>&nbsp;</p>
+    <table class="tabledisp2">
+        <thead><tr><td>ID</td><td>Naam</td><td>Acties</td></tr></thead>
+        <tbody>
+        <?php
+        $stmt = $db->query('SELECT ID, name FROM category ORDER BY ID');
+        while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+            echo '<tr><form method="post">';
+            echo '<td><input type="number" readonly name="category_id" value="' . h($row['ID']) . '"></td>';
+            echo '<td>' . h($row['name']) . '</td>';
+            echo '<td><button type="submit" formaction="cat-crud-upd.php">Wijzigen</button> <button type="submit" formaction="cat-crud-del.php">Verwijderen</button></td>';
+            echo '</form></tr>';
+        }
+        ?>
+        </tbody>
+    </table>
+</main>
+<?php render_footer(); ?>

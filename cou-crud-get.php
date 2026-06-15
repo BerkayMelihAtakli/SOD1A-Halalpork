@@ -1,49 +1,30 @@
 <?php
 session_start();
-require_once 'db.php';
-
-if (!isset($_SESSION['role']) || $_SESSION['role'] !== 'admin') {
-    header('Location: login.php');
-    exit;
-}
-
-$stmt = $pdo->query("SELECT * FROM country ORDER BY name");
-$countries = $stmt->fetchAll(PDO::FETCH_ASSOC);
-
-$message = $_SESSION['message'] ?? '';
-unset($_SESSION['message']);
+require_once 'dbconnect.php';
+require_once 'category_country_helpers.php';
+render_header('Onderhoud countries');
+require_admin();
 ?>
-<!DOCTYPE html>
-<html lang="nl">
-<head><meta charset="UTF-8"><title>Onderhoud countries</title></head>
-<body>
-<h1>Onderhoud countries</h1>
-
-<?php if ($message): ?>
-    <p style="color:green;"><?= htmlspecialchars($message) ?></p>
-<?php endif; ?>
-
-<a href="cou-crud-add.php"><button>Country toevoegen</button></a>
-<br><br>
-
-<table border="1" cellpadding="8">
-    <tr>
-        <th>ID</th>
-        <th>Naam</th>
-        <th>Code</th>
-        <th>Acties</th>
-    </tr>
-    <?php foreach ($countries as $cou): ?>
-    <tr>
-        <td><?= htmlspecialchars($cou['id']) ?></td>
-        <td><?= htmlspecialchars($cou['name']) ?></td>
-        <td><?= htmlspecialchars($cou['code']) ?></td>
-        <td>
-            <a href="cou-crud-upd.php?id=<?= $cou['id'] ?>"><button>Wijzigen</button></a>
-            <a href="cou-crud-del.php?id=<?= $cou['id'] ?>"><button>Verwijderen</button></a>
-        </td>
-    </tr>
-    <?php endforeach; ?>
-</table>
-</body>
-</html>
+<main class="centering">
+    <h2>Onderhoud countries</h2>
+    <?php if (isset($_GET['msg'])) { echo '<p><strong>' . h($_GET['msg']) . '</strong></p>'; } ?>
+    <form action="cou-crud-add.php" method="post"><input type="submit" value="Country toevoegen"></form>
+    <p>&nbsp;</p>
+    <table class="tabledisp2">
+        <thead><tr><td>ID</td><td>Naam</td><td>Code</td><td>Acties</td></tr></thead>
+        <tbody>
+        <?php
+        $stmt = $db->query('SELECT idcountry, name, code FROM country ORDER BY idcountry');
+        while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+            echo '<tr><form method="post">';
+            echo '<td><input type="number" readonly name="country_id" value="' . h($row['idcountry']) . '"></td>';
+            echo '<td>' . h($row['name']) . '</td>';
+            echo '<td>' . h($row['code']) . '</td>';
+            echo '<td><button type="submit" formaction="cou-crud-upd.php">Wijzigen</button> <button type="submit" formaction="cou-crud-del.php">Verwijderen</button></td>';
+            echo '</form></tr>';
+        }
+        ?>
+        </tbody>
+    </table>
+</main>
+<?php render_footer(); ?>

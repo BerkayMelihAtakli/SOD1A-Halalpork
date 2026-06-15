@@ -1,0 +1,20 @@
+Toegevoegd voor C02-01 Wijzigen wachtwoord:
+- change-password.php
+- klant-autorisatie via require_client()
+- huidig wachtwoord controle met password_verify()
+- nieuwe wachtwoorden moeten gelijk zijn
+- nieuw wachtwoord wordt opgeslagen met password_hash()
+- bij succes terug naar index.php met melding
+- login.php uitgebreid met normale login en demo login
+- client-login.php pakt nu geen dummy klant id 0 meer
+
+Toegevoegd voor C02-02 Producten inactief zetten:
+- pro-active-get.php
+- pro-active-confirm.php
+- pro-active-update.php
+- overzicht van alle producten met status
+- admin-autorisatie via require_admin()
+- actief product kan gedeactiveerd worden
+- inactief product kan geactiveerd worden
+- afbreken knop keert terug zonder wijziging
+- menu-links toegevoegd in nav.html en index.php

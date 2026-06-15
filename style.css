@@ -609,3 +609,14 @@ h1 {
         display: none;
     }
 }
+
+.homepage-message {
+    max-width: 1064px;
+    margin: 20px auto;
+    padding: 14px 18px;
+    border: 1px solid #d2b278;
+    border-radius: 8px;
+    background: #f7efe0;
+    color: #2b1b10;
+    font-size: 14px;
+}
