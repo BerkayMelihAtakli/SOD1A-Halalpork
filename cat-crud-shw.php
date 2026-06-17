@@ -1,6 +1,6 @@
 <?php
 session_start();
-require_once 'db.php';
+require_once 'dbconnect.php';
 
 // Alleen voor ingelogde beheerders
 if (!isset($_SESSION['role']) || $_SESSION['role'] !== 'admin') {
