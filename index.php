@@ -12,7 +12,7 @@
 			include "nav.html";
 		?>
 
-	<!-- op de home pagina wat enthousiaste tekst over het bedrijf en de producten -->
+	
  	<main>
 		<div class="centerflex">
 			<img class="centreer" src="images/bread050.jpg" alt="main page image" width="500px">

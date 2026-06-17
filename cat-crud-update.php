@@ -23,7 +23,7 @@ if ($name === '' || !preg_match('/^[a-zA-ZÀ-ÿ\s]+$/', $name)) {
     exit;
 }
 
-// Controleer op duplicate (uitgezonderd huidige record)
+
 $stmt = $pdo->prepare("SELECT COUNT(*) FROM category WHERE LOWER(name) = LOWER(?) AND id != ?");
 $stmt->execute([$name, $id]);
 if ($stmt->fetchColumn() > 0) {

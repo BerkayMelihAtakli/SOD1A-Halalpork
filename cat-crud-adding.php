@@ -9,7 +9,7 @@ if (!isset($_SESSION['role']) || $_SESSION['role'] !== 'admin') {
 
 $name = trim($_POST['name'] ?? '');
 
-// Validatie: verplicht + alleen letters en spaties
+
 if ($name === '' || !preg_match('/^[a-zA-ZÀ-ÿ\s]+$/', $name)) {
     $_SESSION['error'] = 'Naam is verplicht en mag alleen letters en spaties bevatten.';
     $_SESSION['old']   = ['name' => $name];
@@ -17,7 +17,7 @@ if ($name === '' || !preg_match('/^[a-zA-ZÀ-ÿ\s]+$/', $name)) {
     exit;
 }
 
-// Controleer op duplicate
+
 $stmt = $pdo->prepare("SELECT COUNT(*) FROM category WHERE LOWER(name) = LOWER(?)");
 $stmt->execute([$name]);
 if ($stmt->fetchColumn() > 0) {
@@ -27,7 +27,7 @@ if ($stmt->fetchColumn() > 0) {
     exit;
 }
 
-// Opslaan
+
 $stmt = $pdo->prepare("INSERT INTO category (name) VALUES (?)");
 $stmt->execute([$name]);
 

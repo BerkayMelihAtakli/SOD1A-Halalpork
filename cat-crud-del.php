@@ -13,8 +13,7 @@ if ($id === 0) {
     exit;
 }
 
-// Controleer of categorie aan een product gekoppeld is
-// Pas de tabelnaam/kolomnaam aan naar jouw project
+
 $stmt = $pdo->prepare("SELECT COUNT(*) FROM product WHERE category_id = ?");
 $stmt->execute([$id]);
 if ($stmt->fetchColumn() > 0) {
@@ -23,7 +22,7 @@ if ($stmt->fetchColumn() > 0) {
     exit;
 }
 
-// Haal categoriegegevens op
+
 $stmt = $pdo->prepare("SELECT * FROM category WHERE id = ?");
 $stmt->execute([$id]);
 $cat = $stmt->fetch(PDO::FETCH_ASSOC);

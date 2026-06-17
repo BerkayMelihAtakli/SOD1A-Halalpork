@@ -13,8 +13,7 @@ if ($id === 0) {
     exit;
 }
 
-// Controleer of land aan een product gekoppeld is
-// Pas de tabelnaam/kolomnaam aan naar jouw project
+
 $stmt = $pdo->prepare("SELECT COUNT(*) FROM product WHERE country_id = ?");
 $stmt->execute([$id]);
 if ($stmt->fetchColumn() > 0) {

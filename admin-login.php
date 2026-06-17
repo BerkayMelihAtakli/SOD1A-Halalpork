@@ -13,7 +13,7 @@ try {
         $_SESSION['wieBenJeDan'] = trim($admin['first_name'] . ' ' . $admin['last_name']);
         $_SESSION['SoortToegang'] = 'Beheer';
     } else {
-        // Fallback als er geen admin in de database staat.
+        
         $_SESSION['benJeErAl'] = true;
         $_SESSION['welkNummerIsDit'] = 0;
         $_SESSION['wieBenJeDan'] = 'Demo Beheerder';

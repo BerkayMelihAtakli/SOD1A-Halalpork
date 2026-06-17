@@ -2,7 +2,7 @@
 session_start();
 require_once 'dbconnect.php';
 
-// Alleen voor ingelogde beheerders
+
 if (!isset($_SESSION['role']) || $_SESSION['role'] !== 'admin') {
     header('Location: login.php');
     exit;

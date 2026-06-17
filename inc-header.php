@@ -1,6 +1,5 @@
 <?php
-// Usage: include "inc-header.php";
-// Set $pageTitle and $activeNav before including.
+
 $pageTitle  = $pageTitle  ?? 'The Bread Company';
 $activeNav  = $activeNav  ?? '';
 ?>

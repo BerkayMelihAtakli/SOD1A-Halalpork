@@ -1,6 +1,5 @@
 <?php
-// Database connectie voor MAMP/XAMPP.
-// MAMP op Mac gebruikt meestal gebruiker root en wachtwoord root.
+
 try
 {
     $db = new PDO(
@@ -13,7 +12,7 @@ try
 }
 catch(PDOException $e)
 {
-    // Fallback voor XAMPP/andere installaties waar root geen wachtwoord heeft.
+    
     try
     {
         $db = new PDO(

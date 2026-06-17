@@ -16,7 +16,7 @@ if ($id === 0) {
     exit;
 }
 
-// Validatie naam
+
 if ($name === '' || !preg_match('/^[a-zA-ZÀ-ÿ\s]+$/', $name)) {
     $_SESSION['error'] = 'Naam is verplicht en mag alleen letters en spaties bevatten.';
     $_SESSION['old']   = compact('name', 'code');
@@ -24,7 +24,7 @@ if ($name === '' || !preg_match('/^[a-zA-ZÀ-ÿ\s]+$/', $name)) {
     exit;
 }
 
-// Validatie code
+
 if ($code === '' || !preg_match('/^[a-zA-ZÀ-ÿ\s]+$/', $code)) {
     $_SESSION['error'] = 'Code is verplicht en mag alleen letters en spaties bevatten.';
     $_SESSION['old']   = compact('name', 'code');
@@ -32,7 +32,7 @@ if ($code === '' || !preg_match('/^[a-zA-ZÀ-ÿ\s]+$/', $code)) {
     exit;
 }
 
-// Duplicate naam (uitgezonderd huidig record)
+
 $stmt = $pdo->prepare("SELECT COUNT(*) FROM country WHERE LOWER(name) = LOWER(?) AND id != ?");
 $stmt->execute([$name, $id]);
 if ($stmt->fetchColumn() > 0) {
@@ -42,7 +42,7 @@ if ($stmt->fetchColumn() > 0) {
     exit;
 }
 
-// Duplicate code (uitgezonderd huidig record)
+
 $stmt = $pdo->prepare("SELECT COUNT(*) FROM country WHERE LOWER(code) = LOWER(?) AND id != ?");
 $stmt->execute([$code, $id]);
 if ($stmt->fetchColumn() > 0) {
@@ -52,7 +52,7 @@ if ($stmt->fetchColumn() > 0) {
     exit;
 }
 
-// Update
+
 $stmt = $pdo->prepare("UPDATE country SET name = ?, code = ? WHERE id = ?");
 $stmt->execute([$name, $code, $id]);
 
