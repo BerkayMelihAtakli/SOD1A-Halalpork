@@ -1,0 +1,83 @@
+<?php
+session_start();
+require_once 'dbconnect.php';
+require_once 'product_helpers.php';
+
+if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+    header('Location: inlog-admin.php');
+    exit();
+}
+
+$token = $_POST['csrf_token'] ?? '';
+if (empty($token) || !hash_equals($_SESSION['csrf_inlog_admin'] ?? '', $token)) {
+    header('Location: inlog-admin.php?msg=' . urlencode('Ongeldige toegang.'));
+    exit();
+}
+
+$fout       = 'Combinatie van email-adres en wachtwoord is niet correct';
+$email      = trim($_POST['email'] ?? '');
+$wachtwoord = $_POST['wachtwoord'] ?? '';
+
+if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+    header('Location: inlog-admin.php?msg=' . urlencode($fout));
+    exit();
+}
+
+try {
+    $stmt = $db->prepare(
+        "SELECT id, first_name, last_name, isadmin, pswrd FROM client WHERE email = ?"
+    );
+    $stmt->execute([$email]);
+    $rijen = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+    if (count($rijen) !== 1) {
+        header('Location: inlog-admin.php?msg=' . urlencode($fout));
+        exit();
+    }
+
+    $client = $rijen[0];
+
+    if ($client['isadmin'] !== 'J') {
+        header('Location: inlog-admin.php?msg=' . urlencode($fout));
+        exit();
+    }
+
+    if (!password_verify($wachtwoord, $client['pswrd'])) {
+        header('Location: inlog-admin.php?msg=' . urlencode($fout));
+        exit();
+    }
+
+    if (password_needs_rehash($client['pswrd'], PASSWORD_DEFAULT)) {
+        $nieuwHash = password_hash($wachtwoord, PASSWORD_DEFAULT);
+        $db->prepare("UPDATE client SET pswrd = ? WHERE id = ?")->execute([$nieuwHash, $client['id']]);
+
+        if (!password_verify($wachtwoord, $nieuwHash)) {
+            header('Location: inlog-admin.php?msg=' . urlencode($fout));
+            exit();
+        }
+    }
+
+    session_regenerate_id(true);
+
+    $_SESSION['benJeErAl']       = true;
+    $_SESSION['welkNummerIsDit'] = (int)$client['id'];
+    $_SESSION['wieBenJeDan']     = trim($client['first_name'] . ' ' . $client['last_name']);
+    $_SESSION['SoortToegang']    = 'Beheer';
+
+    unset($_SESSION['csrf_inlog_admin']);
+
+    render_header('Inloggen beheerder');
+    ?>
+    <main>
+        <h2>Inloggen als beheerder gelukt</h2>
+        <p>Welkom, <strong><?= h($_SESSION['wieBenJeDan']) ?></strong>. Je bent nu ingelogd als beheerder.</p>
+        <p><a href="index.php"><button type="button">Ga naar home</button></a></p>
+    </main>
+    <?php
+    render_footer();
+
+} catch (PDOException $e) {
+    header('Location: inlog-admin.php?msg=' . urlencode('Er is een technische fout opgetreden.'));
+    exit();
+}
+?>
