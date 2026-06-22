@@ -1,4 +1,5 @@
 <?php
+session_start();
 require_once "dbconnect.php";
 
 $stmt = $db->query("
@@ -15,8 +16,11 @@ $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
 <head>
     <meta charset="UTF-8">
     <title>Alle categorieën met gemiddelde prijs</title>
+    <link rel="stylesheet" type="text/css" href="company.css">
 </head>
 <body>
+
+<?php include "nav.html"; ?>
 
 <h2>Alle categorieën met gemiddelde prijs</h2>
 
