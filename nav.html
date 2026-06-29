@@ -82,7 +82,9 @@
           <ul>
             <li><a href="inlog-admin.php" class="scndlvl">Inloggen beheerder</a></li>
             <li><a href="login.php" class="scndlvl">Login (demo)</a></li>
+            <?php if (!empty($_SESSION['benJeErAl'])): ?>
             <li><a href="logout.php" class="scndlvl">Uitloggen</a></li>
+            <?php endif; ?>
           </ul>
         </li>
       </ul>
