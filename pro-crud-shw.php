@@ -191,7 +191,6 @@ $vanDeWeek = $db->query("
     </header>
 
     <main>
-        <!-- Hero -->
         <section class="page-hero section-border">
             <div class="container page-hero-inner">
                 <p class="eyebrow">Ons assortiment</p>
@@ -200,7 +199,6 @@ $vanDeWeek = $db->query("
             </div>
         </section>
 
-        <!-- Van de week -->
         <section class="week-section section-border">
             <div class="container week-inner">
                 <p class="eyebrow">Uitgelicht</p>
@@ -221,14 +219,12 @@ $vanDeWeek = $db->query("
             </div>
         </section>
 
-        <!-- Category groups -->
         <section class="groups-section">
             <div class="container">
                 <p class="eyebrow">Categorieën</p>
                 <h2>Waar bent u naar op zoek?</h2>
                 <div class="groups-grid">
 
-                    <!-- Brood -->
                     <a href="pro-brood.php" class="group-card">
                         <div class="group-card-top brood">
                             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4">
@@ -247,7 +243,6 @@ $vanDeWeek = $db->query("
                         </div>
                     </a>
 
-                    <!-- Broodjes & Bollen -->
                     <a href="pro-broodjes.php" class="group-card">
                         <div class="group-card-top broodjes">
                             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4">
@@ -268,7 +263,6 @@ $vanDeWeek = $db->query("
                         </div>
                     </a>
 
-                    <!-- Gebak -->
                     <a href="pro-gebak.php" class="group-card">
                         <div class="group-card-top gebak">
                             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4">

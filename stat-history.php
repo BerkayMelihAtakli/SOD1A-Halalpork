@@ -9,14 +9,12 @@
 <body>
 	<header>
 		<h1>Historie van de Bread Company</h1>
-		<!-- hieronder wordt het menu opgehaald. -->
 		<?php
 			session_start(); 
 			include "nav.html";
 		?>
 	</header>
  
-	<!-- Door ChatGPT gegenereerde tekst over de historie van Bread Company -->
  	<main>
 		<div class="centerflex">
 			<img class="centreer" src="images/bread035.jpg" alt="main page image" width="500px"> 

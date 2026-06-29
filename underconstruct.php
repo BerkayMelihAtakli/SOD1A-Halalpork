@@ -9,15 +9,12 @@
 <body>
 <header>
 		<h1>Welkom bij de Bread Company</h1>
-		<!-- hieronder wordt het menu opgehaald. -->
 		<?php
 			session_start(); 
 			include "nav.html";
 		?>
 	</header>
  
-	<!-- Deze pagina is bestemd om functionaliteiten die nog niet af zijn van een 
-        nette boodschap te voorzien -->
  	<main>
 		<div class="centerflex">
 			<img class="centreer" src="images/construction.jpg" alt="main page image" width="500px"> 

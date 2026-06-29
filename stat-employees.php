@@ -275,7 +275,6 @@ $stats = $db->query("
 
     <main>
 
-        <!-- ── Page hero ── -->
         <section class="page-hero section-border">
             <div class="container page-hero-inner">
                 <p class="eyebrow">Ons team</p>
@@ -287,7 +286,6 @@ $stats = $db->query("
             </div>
         </section>
 
-        <!-- ── Stats strip (live from DB) ── -->
         <section class="stats-strip section-border">
             <div class="container stats-grid">
                 <div class="stat-item">
@@ -309,7 +307,6 @@ $stats = $db->query("
             </div>
         </section>
 
-        <!-- ── Employee table (live from DB) ── -->
         <section class="employees-section">
             <div class="container employees-inner">
                 <div class="section-header">

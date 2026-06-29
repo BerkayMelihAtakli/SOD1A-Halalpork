@@ -9,7 +9,6 @@
 <body>
     <header>  
         <h1>Bread Company en het milieu</h1>
-		<!-- hieronder wordt het menu opgehaald. -->
 		<?php
 			session_start(); 
 			include "nav.html";
