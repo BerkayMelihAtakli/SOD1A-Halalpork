@@ -20,6 +20,11 @@ if (!isset($_SESSION["benJeErAl"]) || $_SESSION["benJeErAl"] !== true || !isset(
 	exit();
 }
 
+if (empty($_SESSION['welkNummerIsDit']) || (int)$_SESSION['welkNummerIsDit'] <= 0) {
+	echo "<main class='centering'><h2>Ongeldig klantaccount. Log opnieuw in.</h2><p><a href='login.php'>Inloggen</a></p></main></body></html>";
+	exit();
+}
+
 $productid = intval($_POST['productid'] ?? 0);
 $quantity  = intval($_POST['quantity'] ?? 0);
 
