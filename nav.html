@@ -80,10 +80,12 @@
 
         <li class="main-item"><a href="#">Account</a>
           <ul>
+            <?php if (!empty($_SESSION['benJeErAl'])): ?>
+            <li><span class="scndlvl">Je bent al ingelogd</span></li>
+            <li><a href="logout.php" class="scndlvl">Uitloggen</a></li>
+            <?php else: ?>
             <li><a href="inlog-admin.php" class="scndlvl">Inloggen beheerder</a></li>
             <li><a href="login.php" class="scndlvl">Login (demo)</a></li>
-            <?php if (!empty($_SESSION['benJeErAl'])): ?>
-            <li><a href="logout.php" class="scndlvl">Uitloggen</a></li>
             <?php endif; ?>
           </ul>
         </li>
