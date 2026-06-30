@@ -1,8 +1,11 @@
-<?php
+﻿<?php
 session_start();
 require_once 'dbconnect.php';
 require_once 'product_helpers.php';
+
+// Alleen beheerders mogen het klantenoverzicht bekijken
 render_header('Klantenoverzicht');
+require_admin();
 ?>
 <main class="centering">
     <h2>Klantenoverzicht</h2>
@@ -11,24 +14,26 @@ render_header('Klantenoverzicht');
             <tr>
                 <td>Voornaam</td>
                 <td>Achternaam</td>
+                <td>E-mail</td>
                 <td>Woonplaats</td>
                 <td>Land</td>
             </tr>
         </thead>
         <tbody>
         <?php
-        $sql = "SELECT c.first_name, c.last_name, c.city, co.name AS country_name
+        // Haal alle klanten op met hun landnaam
+        $sql = "SELECT c.first_name, c.last_name, c.email, c.city, co.name AS country_name
                 FROM client c
                 LEFT JOIN country co ON c.country = co.idcountry
-                WHERE c.id > 0
                 ORDER BY c.last_name, c.first_name";
         $stmt = $db->prepare($sql);
         $stmt->execute();
         while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
             echo '<tr>';
-            echo '<td>' . h($row['first_name']) . '</td>';
-            echo '<td>' . h($row['last_name']) . '</td>';
-            echo '<td>' . h($row['city']) . '</td>';
+            echo '<td>' . h($row['first_name'])   . '</td>';
+            echo '<td>' . h($row['last_name'])    . '</td>';
+            echo '<td>' . h($row['email'])        . '</td>';
+            echo '<td>' . h($row['city'])         . '</td>';
             echo '<td>' . h($row['country_name']) . '</td>';
             echo '</tr>';
         }
