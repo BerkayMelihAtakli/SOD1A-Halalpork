@@ -21,7 +21,6 @@ if (!empty($errors)) {
 $_SESSION['pending_client'] = $client;
 $_SESSION['pending_client']['pswrd'] = $_POST['pswrd'];
 
-// Fetch country name for display
 $stmt = $db->prepare('SELECT name FROM country WHERE idcountry = :id');
 $stmt->execute([':id' => $client['country']]);
 $countryName = $stmt->fetchColumn() ?: '—';

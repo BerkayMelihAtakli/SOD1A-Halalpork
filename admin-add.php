@@ -1,6 +1,4 @@
 <?php
-// Stap 1: Overzicht van klanten zonder beheerrechten
-// Alleen toegankelijk voor ingelogde beheerders
 session_start();
 require_once 'dbconnect.php';
 require_once 'product_helpers.php';
@@ -8,7 +6,6 @@ require_once 'product_helpers.php';
 render_header('Beheerrechten toekennen');
 require_admin();
 
-// Haal alle klanten op zonder beheerrechten (isadmin = 'N') en id <> 0
 $stmt = $db->prepare(
     "SELECT id, first_name, last_name, email, city
      FROM client
@@ -44,7 +41,6 @@ $clients = $stmt->fetchAll(PDO::FETCH_ASSOC);
                 <td><?php echo h($client['email']); ?></td>
                 <td><?php echo h($client['city']); ?></td>
                 <td>
-                    <!-- Elk rij is een eigen formulier met de klant-ID als verborgen veld -->
                     <form action="admin-add01.php" method="post">
                         <input type="hidden" name="client_id" value="<?php echo h($client['id']); ?>">
                         <input type="submit" value="Maak beheerder">
