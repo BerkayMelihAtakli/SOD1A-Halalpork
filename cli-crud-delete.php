@@ -10,13 +10,10 @@ if (!isset($_SESSION['delete_client_id']) || (int)$_SESSION['delete_client_id'] 
     exit();
 }
 
-// Re-check for open orders before deleting
-$check = $db->prepare(
-    "SELECT COUNT(*) FROM purchase WHERE clientid = :id AND delivered = 0"
-);
+$check = $db->prepare('SELECT COUNT(*) FROM purchase WHERE clientid = :id AND delivered = 0');
 $check->execute([':id' => $id]);
 if ((int)$check->fetchColumn() > 0) {
-    header('Location: cli-crud-get.php?msg=' . urlencode('Klant kan niet verwijderd worden: openstaande bestellingen gevonden.'));
+    header('Location: cli-crud-get.php?msg=' . urlencode('Klant kan niet verwijderd worden: niet-afgeleverde bestelling gevonden.'));
     exit();
 }
 

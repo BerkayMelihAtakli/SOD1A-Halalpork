@@ -3,13 +3,26 @@ session_start();
 require_once 'dbconnect.php';
 require_once 'client_helpers.php';
 
-if (!isset($_SESSION['pending_client'])) {
+$isAdmin = isset($_SESSION['SoortToegang']) && $_SESSION['SoortToegang'] === 'Beheer';
+
+$errors = [];
+$client = validate_client_input($errors, true);
+
+if (!empty($errors)) {
+    $_SESSION['client_errors'] = $errors;
+    $_SESSION['old_client'] = $_POST;
     header('Location: cli-crud-add.php');
     exit();
 }
 
-$client = $_SESSION['pending_client'];
-unset($_SESSION['pending_client']);
+$checkEmail = $db->prepare("SELECT COUNT(*) FROM client WHERE email = :email");
+$checkEmail->execute([':email' => $client['email']]);
+if ((int)$checkEmail->fetchColumn() > 0) {
+    $_SESSION['client_errors'] = ['Dit e-mailadres is al in gebruik.'];
+    $_SESSION['old_client'] = $_POST;
+    header('Location: cli-crud-add.php');
+    exit();
+}
 
 $sql = "INSERT INTO client (first_name, last_name, email, adress, zipcode, city, state, country, telephone, isadmin, pswrd)
         VALUES (:first_name, :last_name, :email, :adress, :zipcode, :city, :state, :country, :telephone, 'N', :pswrd)";
@@ -27,14 +40,16 @@ $stmt->execute([
     ':pswrd'      => password_hash($client['pswrd'], PASSWORD_DEFAULT),
 ]);
 
-render_header('Welkom!');
+if ($isAdmin) {
+    header('Location: cli-crud-get.php?msg=' . urlencode('Klant succesvol toegevoegd.'));
+} else {
+    $newId = (int)$db->lastInsertId();
+    session_regenerate_id(true);
+    $_SESSION['benJeErAl']       = true;
+    $_SESSION['welkNummerIsDit'] = $newId;
+    $_SESSION['wieBenJeDan']     = trim($client['first_name'] . ' ' . $client['last_name']);
+    $_SESSION['SoortToegang']    = 'Klant';
+    header('Location: index.php?msg=' . urlencode('Welkom! Je account is aangemaakt.'));
+}
+exit();
 ?>
-<main class="centering">
-    <h2>Welkom, <?php echo h($client['first_name']); ?>!</h2>
-    <p>Uw registratie is succesvol afgerond. U kunt nu inloggen met uw e-mailadres en wachtwoord.</p>
-    <p>
-        <a href="login.php">Ga naar de loginpagina</a> |
-        <a href="index.php">Terug naar home</a>
-    </p>
-</main>
-<?php render_footer(); ?>
