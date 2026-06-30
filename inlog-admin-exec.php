@@ -66,15 +66,30 @@ try {
 
     unset($_SESSION['csrf_inlog_admin']);
 
-    render_header('Inloggen beheerder');
     ?>
-    <main>
-        <h2>Inloggen als beheerder gelukt</h2>
-        <p>Welkom, <strong><?= h($_SESSION['wieBenJeDan']) ?></strong>. Je bent nu ingelogd als beheerder.</p>
-        <p><a href="index.php"><button type="button">Ga naar home</button></a></p>
-    </main>
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Welkom — The Bread Company</title>
+    <link rel="stylesheet" href="company.css">
+</head>
+<body class="hp-page">
+<?php include 'nav.html'; ?>
+<div class="ok-wrap">
+    <div class="ok-card">
+        <div class="ok-icon">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#7d5ba6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+        </div>
+        <h1>Welkom, <?= h($_SESSION['wieBenJeDan']) ?>!</h1>
+        <p>Je bent ingelogd als beheerder. Je hebt nu toegang tot alle beheerfuncties.</p>
+        <a href="index.php" class="ok-btn">Naar home</a>
+    </div>
+</div>
+</body>
+</html>
     <?php
-    render_footer();
 
 } catch (PDOException $e) {
     header('Location: inlog-admin.php?msg=' . urlencode('Er is een technische fout opgetreden.'));

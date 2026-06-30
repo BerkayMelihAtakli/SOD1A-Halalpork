@@ -1,0 +1,139 @@
+*, *::before, *::after { box-sizing: border-box; }
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+.hp-nav {
+  background: #ffffff;
+  border-bottom: 1px solid #d4d4d4;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  width: 100vw;
+  margin-left: calc(50% - 50vw);
+}
+
+.hp-nav-inner {
+  max-width: 1440px;
+  margin: 0 auto;
+  padding: 24px 96px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.hp-logo {
+  font-family: 'Inter', Arial, sans-serif;
+  font-size: 20px;
+  letter-spacing: 0.01em;
+  line-height: 1;
+  text-decoration: none;
+  flex-shrink: 0;
+}
+
+.hp-logo-a {
+  font-weight: 400;
+  color: #2a2a2a;
+}
+
+.hp-logo-b {
+  font-weight: 700;
+  color: #7d5ba6;
+}
+
+.hp-nav-links {
+  display: flex;
+  align-items: center;
+  gap: 32px;
+}
+
+.hp-link {
+  font-size: 14px;
+  color: #404040;
+  text-decoration: none;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 4px 0;
+  font-family: 'Inter', Arial, sans-serif;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  transition: color 0.15s;
+}
+
+.hp-link:hover {
+  color: #171717;
+}
+
+.hp-chev {
+  width: 14px;
+  height: 14px;
+  flex-shrink: 0;
+  transition: transform 0.2s;
+}
+
+.hp-drop-wrap {
+  position: relative;
+}
+
+.hp-drop-wrap:hover .hp-drop {
+  display: block;
+}
+
+.hp-drop-wrap:hover .hp-chev {
+  transform: rotate(180deg);
+}
+
+.hp-drop {
+  display: none;
+  position: absolute;
+  top: 100%;
+  left: 0;
+  background: #ffffff;
+  border: 1px solid #e5e5e5;
+  box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1), 0 2px 4px -2px rgba(0,0,0,0.1);
+  border-radius: 2px;
+  min-width: 180px;
+  padding: 8px 0 4px;
+  z-index: 200;
+}
+
+.hp-drop a,
+.hp-drop-label {
+  display: block;
+  padding: 8px 16px;
+  font-size: 14px;
+  color: #404040;
+  text-decoration: none;
+  transition: background 0.1s, color 0.1s;
+  white-space: nowrap;
+}
+
+.hp-drop a:hover {
+  background: #fafafa;
+  color: #171717;
+}
+
+.hp-drop-label {
+  font-size: 12px;
+  color: #a3a3a3;
+  font-style: italic;
+  cursor: default;
+}
+
+.hp-cta {
+  font-size: 14px;
+  font-weight: 600;
+  color: #ffffff;
+  background: #7d5ba6;
+  text-decoration: none;
+  padding: 8px 18px;
+  border-radius: 2px;
+  transition: opacity 0.15s;
+  white-space: nowrap;
+}
+
+.hp-cta:hover {
+  opacity: 0.9;
+  color: #ffffff;
+}
