@@ -2,22 +2,20 @@
 session_start();
 require_once 'dbconnect.php';
 require_once 'product_helpers.php';
-render_header('Overzicht beheerders');
 require_admin();
+render_header('Alle beheerders');
 ?>
 <main class="centering">
-    <h2>Overzicht alle beheerders</h2>
+    <h2>Alle beheerders</h2>
     <?php
-    $sql = "SELECT c.id, c.first_name, c.last_name, c.email, c.city, co.name AS country_name
+    $sql = "SELECT c.id, c.first_name, c.last_name, c.email, c.adress, c.zipcode, c.city
             FROM client c
-            LEFT JOIN country co ON c.country = co.idcountry
-            WHERE c.isadmin = 'J'
+            WHERE c.isadmin = 'J' AND c.id > 0
             ORDER BY c.last_name, c.first_name";
     $stmt = $db->prepare($sql);
     $stmt->execute();
     $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
     ?>
-    <p>Totaal: <?php echo count($rows); ?> beheerder(s).</p>
     <table class="tabledisp2">
         <thead>
             <tr>
@@ -25,19 +23,21 @@ require_admin();
                 <th>Voornaam</th>
                 <th>Achternaam</th>
                 <th>E-mail</th>
-                <th>Woonplaats</th>
-                <th>Land</th>
+                <th>Adres</th>
+                <th>Postcode</th>
+                <th>Stad</th>
             </tr>
         </thead>
         <tbody>
         <?php foreach ($rows as $row): ?>
             <tr>
-                <td><?php echo h($row['id']); ?></td>
-                <td><?php echo h($row['first_name']); ?></td>
-                <td><?php echo h($row['last_name']); ?></td>
-                <td><?php echo h($row['email']); ?></td>
-                <td><?php echo h($row['city']); ?></td>
-                <td><?php echo h($row['country_name']); ?></td>
+                <td><?= h($row['id']) ?></td>
+                <td><?= h($row['first_name']) ?></td>
+                <td><?= h($row['last_name']) ?></td>
+                <td><?= h($row['email']) ?></td>
+                <td><?= h($row['adress']) ?></td>
+                <td><?= h($row['zipcode']) ?></td>
+                <td><?= h($row['city']) ?></td>
             </tr>
         <?php endforeach; ?>
         </tbody>
