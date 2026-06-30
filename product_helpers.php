@@ -15,7 +15,7 @@ function require_admin() {
 }
 
 function render_header($title) {
-    echo '<!DOCTYPE html><html lang="nl"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>' . h($title) . '</title><link rel="stylesheet" href="company.css"></head><body>';
+    echo '<!DOCTYPE html><html lang="nl"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>' . h($title) . '</title><link rel="stylesheet" href="company.css?v=2"></head><body>';
     include 'nav.html';
 }
 
