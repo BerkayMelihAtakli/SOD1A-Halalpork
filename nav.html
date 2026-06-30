@@ -123,9 +123,14 @@ $klantId = (int)($_SESSION['welkNummerIsDit'] ?? 0);
           </div>
         </div>
 
-        <a href="inlog-client.php" class="hp-link">Inloggen</a>
-        <a href="inlog-admin.php" class="hp-link">Beheerder</a>
-        <a href="cli-crud-add.php" class="hp-cta">Registreer gratis</a>
+        <div class="hp-drop-wrap">
+          <button class="hp-link hp-drop-btn">Login <svg class="hp-chev" viewBox="0 0 16 16" fill="none"><path d="M4 6l4 4 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+          <div class="hp-drop">
+            <a href="inlog-client.php">Inloggen als klant</a>
+            <a href="inlog-admin.php">Inloggen als beheerder</a>
+          </div>
+        </div>
+        <a href="cli-crud-add.php" class="hp-cta">Registreer</a>
 
       <?php endif; ?>
     </div>
