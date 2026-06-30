@@ -2,73 +2,47 @@
 session_start();
 require_once 'dbconnect.php';
 require_once 'client_helpers.php';
-require_admin();
 
-$id = (int)($_POST['client_id'] ?? 0);
-if (!isset($_SESSION['update_client_id']) || (int)$_SESSION['update_client_id'] !== $id) {
-    header('Location: cli-crud-get.php?msg=' . urlencode('Ongeldige wijziging: klant-ID klopt niet.'));
+if ($_SERVER['REQUEST_METHOD'] !== 'POST'
+    || empty($_SESSION['upd_client_id'])
+    || empty($_SESSION['upd_client_data'])) {
+    header('Location: cli-crud-upd.php');
     exit();
 }
 
-$errors = [];
-$client = validate_client_input($errors, false);
+$id     = (int)$_SESSION['upd_client_id'];
+$c      = $_SESSION['upd_client_data'];
+$isAdminEdit = $_SESSION['upd_from_admin'] ?? false;
+unset($_SESSION['upd_client_id'], $_SESSION['upd_client_data'], $_SESSION['upd_from_admin']);
 
-if (!empty($errors)) {
-    $_SESSION['client_errors'] = $errors;
-    $_SESSION['old_client'] = $_POST;
-    header('Location: cli-crud-upd.php?id=' . $id);
-    exit();
-}
-
-if ($client['pswrd'] !== '') {
-    if (strlen($client['pswrd']) < 6) {
-        $_SESSION['client_errors'] = ['Nieuw wachtwoord moet minimaal 6 tekens bevatten.'];
-        $_SESSION['old_client'] = $_POST;
-        header('Location: cli-crud-upd.php?id=' . $id);
-        exit();
-    }
-    $sql = "UPDATE client
-            SET first_name = :first_name, last_name = :last_name, email = :email,
-                adress = :adress, zipcode = :zipcode, city = :city, state = :state,
-                country = :country, telephone = :telephone, pswrd = :pswrd
-            WHERE id = :id";
-    $params = [
-        ':first_name' => $client['first_name'],
-        ':last_name'  => $client['last_name'],
-        ':email'      => $client['email'],
-        ':adress'     => $client['adress'],
-        ':zipcode'    => $client['zipcode'],
-        ':city'       => $client['city'],
-        ':state'      => $client['state'],
-        ':country'    => $client['country'] > 0 ? $client['country'] : null,
-        ':telephone'  => $client['telephone'],
-        ':pswrd'      => password_hash($client['pswrd'], PASSWORD_DEFAULT),
-        ':id'         => $id,
-    ];
-} else {
-    $sql = "UPDATE client
-            SET first_name = :first_name, last_name = :last_name, email = :email,
-                adress = :adress, zipcode = :zipcode, city = :city, state = :state,
-                country = :country, telephone = :telephone
-            WHERE id = :id";
-    $params = [
-        ':first_name' => $client['first_name'],
-        ':last_name'  => $client['last_name'],
-        ':email'      => $client['email'],
-        ':adress'     => $client['adress'],
-        ':zipcode'    => $client['zipcode'],
-        ':city'       => $client['city'],
-        ':state'      => $client['state'],
-        ':country'    => $client['country'] > 0 ? $client['country'] : null,
-        ':telephone'  => $client['telephone'],
-        ':id'         => $id,
-    ];
-}
-
+$sql = "UPDATE client
+        SET first_name = :first_name, last_name = :last_name, email = :email,
+            adress = :adress, zipcode = :zipcode, city = :city, state = :state,
+            country = :country, telephone = :telephone
+        WHERE id = :id";
 $stmt = $db->prepare($sql);
-$stmt->execute($params);
-unset($_SESSION['update_client_id']);
+$stmt->execute([
+    ':first_name' => $c['first_name'],
+    ':last_name'  => $c['last_name'],
+    ':email'      => $c['email'],
+    ':adress'     => $c['adress'],
+    ':zipcode'    => $c['zipcode'],
+    ':city'       => $c['city'],
+    ':state'      => $c['state'],
+    ':country'    => $c['country'] > 0 ? $c['country'] : null,
+    ':telephone'  => $c['telephone'],
+    ':id'         => $id,
+]);
 
-header('Location: cli-crud-get.php?msg=' . urlencode('Klant succesvol gewijzigd.'));
-exit();
+render_header('Gegevens gewijzigd');
 ?>
+<main class="centering">
+    <h2>Gegevens succesvol gewijzigd</h2>
+    <p>Jouw gegevens zijn bijgewerkt.</p>
+    <?php if ($isAdminEdit): ?>
+        <p><a href="cli-crud-get.php"><button type="button">Terug naar klantenlijst</button></a></p>
+    <?php else: ?>
+        <p><a href="index.php"><button type="button">Terug naar home</button></a></p>
+    <?php endif; ?>
+</main>
+<?php render_footer(); ?>
