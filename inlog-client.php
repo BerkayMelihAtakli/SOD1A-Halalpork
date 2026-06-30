@@ -7,8 +7,8 @@ if (!empty($_SESSION['benJeErAl']) && $_SESSION['SoortToegang'] === 'Klant') {
     exit();
 }
 
-if (empty($_SESSION['csrf_inlog_klant'])) {
-    $_SESSION['csrf_inlog_klant'] = bin2hex(random_bytes(32));
+if (empty($_SESSION['csrf_inlog_client'])) {
+    $_SESSION['csrf_inlog_client'] = bin2hex(random_bytes(32));
 }
 
 render_header('Inloggen klant');
@@ -20,8 +20,8 @@ render_header('Inloggen klant');
         <p style="color:red;"><strong><?= h($_GET['msg']) ?></strong></p>
     <?php } ?>
 
-    <form action="inlog-klant-exec.php" method="post" class="tabledisp">
-        <input type="hidden" name="csrf_token" value="<?= h($_SESSION['csrf_inlog_klant']) ?>">
+    <form action="inlog-client-exec.php" method="post" class="tabledisp">
+        <input type="hidden" name="csrf_token" value="<?= h($_SESSION['csrf_inlog_client']) ?>">
 
         <label for="email">E-mailadres</label>
         <input type="email" id="email" name="email" required autofocus>

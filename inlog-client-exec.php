@@ -4,13 +4,13 @@ require_once 'dbconnect.php';
 require_once 'product_helpers.php';
 
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-    header('Location: inlog-klant.php');
+    header('Location: inlog-client.php');
     exit();
 }
 
 $token = $_POST['csrf_token'] ?? '';
-if (empty($token) || !hash_equals($_SESSION['csrf_inlog_klant'] ?? '', $token)) {
-    header('Location: inlog-klant.php?msg=' . urlencode('Ongeldige toegang.'));
+if (empty($token) || !hash_equals($_SESSION['csrf_inlog_client'] ?? '', $token)) {
+    header('Location: inlog-client.php?msg=' . urlencode('Ongeldige toegang.'));
     exit();
 }
 
@@ -19,7 +19,7 @@ $email      = trim($_POST['email'] ?? '');
 $wachtwoord = $_POST['wachtwoord'] ?? '';
 
 if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
-    header('Location: inlog-klant.php?msg=' . urlencode($fout));
+    header('Location: index.php?msg=' . urlencode($fout));
     exit();
 }
 
@@ -31,14 +31,14 @@ try {
     $rijen = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
     if (count($rijen) !== 1) {
-        header('Location: inlog-klant.php?msg=' . urlencode($fout));
+        header('Location: index.php?msg=' . urlencode($fout));
         exit();
     }
 
     $client = $rijen[0];
 
     if (!password_verify($wachtwoord, $client['pswrd'])) {
-        header('Location: inlog-klant.php?msg=' . urlencode($fout));
+        header('Location: index.php?msg=' . urlencode($fout));
         exit();
     }
 
@@ -52,20 +52,13 @@ try {
     $_SESSION['welkNummerIsDit'] = (int)$client['id'];
     $_SESSION['wieBenJeDan']     = trim($client['first_name'] . ' ' . $client['last_name']);
     $_SESSION['SoortToegang']    = 'Klant';
-    unset($_SESSION['csrf_inlog_klant']);
+    unset($_SESSION['csrf_inlog_client']);
 
-    render_header('Inloggen gelukt');
-    ?>
-    <main>
-        <h2>Inloggen gelukt</h2>
-        <p>Welkom, <strong><?= h($_SESSION['wieBenJeDan']) ?></strong>!</p>
-        <p><a href="index.php"><button type="button">Ga naar home</button></a></p>
-    </main>
-    <?php
-    render_footer();
+    header('Location: index.php?msg=' . urlencode('Welkom ' . $client['first_name'] . ', inloggen is gelukt.'));
+    exit();
 
 } catch (PDOException $e) {
-    header('Location: inlog-klant.php?msg=' . urlencode('Er is een technische fout opgetreden.'));
+    header('Location: index.php?msg=' . urlencode('Er is een technische fout opgetreden.'));
     exit();
 }
 ?>
