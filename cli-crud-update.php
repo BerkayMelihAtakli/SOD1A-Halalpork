@@ -1,74 +1,78 @@
-<?php
+﻿<?php
 session_start();
 require_once 'dbconnect.php';
+require_once 'product_helpers.php';
 require_once 'client_helpers.php';
-require_admin();
 
-$id = (int)($_POST['client_id'] ?? 0);
-if (!isset($_SESSION['update_client_id']) || (int)$_SESSION['update_client_id'] !== $id) {
-    header('Location: cli-crud-get.php?msg=' . urlencode('Ongeldige wijziging: klant-ID klopt niet.'));
+// Alleen bereikbaar via POST vanuit cli-crud-upd01.php (knop "Bevestigen")
+if ($_SERVER['REQUEST_METHOD'] !== 'POST' || !isset($_POST['confirm_update'])) {
+    header('Location: cli-crud-upd.php');
     exit();
 }
 
-$errors = [];
-$client = validate_client_input($errors, false);
-
-if (!empty($errors)) {
-    $_SESSION['client_errors'] = $errors;
-    $_SESSION['old_client'] = $_POST;
-    header('Location: cli-crud-upd.php?id=' . $id);
+if (!is_admin() && !is_client()) {
+    header('Location: inlog-client.php');
     exit();
 }
 
+if (!isset($_SESSION['pending_update'])) {
+    header('Location: cli-crud-upd.php');
+    exit();
+}
+
+$client = $_SESSION['pending_update'];
+$id     = (int)$client['id'];
+unset($_SESSION['pending_update'], $_SESSION['update_client_id']);
+
+// Klant mag alleen eigen gegevens wijzigen
+if (is_client() && $id !== (int)($_SESSION['welkNummerIsDit'] ?? 0)) {
+    header('Location: index.php');
+    exit();
+}
+
+// UPDATE met of zonder nieuw wachtwoord
 if ($client['pswrd'] !== '') {
-    if (strlen($client['pswrd']) < 6) {
-        $_SESSION['client_errors'] = ['Nieuw wachtwoord moet minimaal 6 tekens bevatten.'];
-        $_SESSION['old_client'] = $_POST;
-        header('Location: cli-crud-upd.php?id=' . $id);
-        exit();
-    }
     $sql = "UPDATE client
             SET first_name = :first_name, last_name = :last_name, email = :email,
                 adress = :adress, zipcode = :zipcode, city = :city, state = :state,
                 country = :country, telephone = :telephone, pswrd = :pswrd
             WHERE id = :id";
-    $params = [
-        ':first_name' => $client['first_name'],
-        ':last_name'  => $client['last_name'],
-        ':email'      => $client['email'],
-        ':adress'     => $client['adress'],
-        ':zipcode'    => $client['zipcode'],
-        ':city'       => $client['city'],
-        ':state'      => $client['state'],
-        ':country'    => $client['country'] > 0 ? $client['country'] : null,
-        ':telephone'  => $client['telephone'],
-        ':pswrd'      => password_hash($client['pswrd'], PASSWORD_DEFAULT),
-        ':id'         => $id,
-    ];
 } else {
     $sql = "UPDATE client
             SET first_name = :first_name, last_name = :last_name, email = :email,
                 adress = :adress, zipcode = :zipcode, city = :city, state = :state,
                 country = :country, telephone = :telephone
             WHERE id = :id";
-    $params = [
-        ':first_name' => $client['first_name'],
-        ':last_name'  => $client['last_name'],
-        ':email'      => $client['email'],
-        ':adress'     => $client['adress'],
-        ':zipcode'    => $client['zipcode'],
-        ':city'       => $client['city'],
-        ':state'      => $client['state'],
-        ':country'    => $client['country'] > 0 ? $client['country'] : null,
-        ':telephone'  => $client['telephone'],
-        ':id'         => $id,
-    ];
 }
 
 $stmt = $db->prepare($sql);
-$stmt->execute($params);
-unset($_SESSION['update_client_id']);
+$stmt->bindValue(':first_name', $client['first_name']);
+$stmt->bindValue(':last_name',  $client['last_name']);
+$stmt->bindValue(':email',      $client['email']);
+$stmt->bindValue(':adress',     $client['adress']);
+$stmt->bindValue(':zipcode',    $client['zipcode']);
+$stmt->bindValue(':city',       $client['city']);
+$stmt->bindValue(':state',      $client['state']);
+$stmt->bindValue(':country',    $client['country'] > 0 ? $client['country'] : null, PDO::PARAM_INT);
+$stmt->bindValue(':telephone',  $client['telephone']);
+if ($client['pswrd'] !== '') {
+    $stmt->bindValue(':pswrd', password_hash($client['pswrd'], PASSWORD_DEFAULT));
+}
+$stmt->bindValue(':id', $id, PDO::PARAM_INT);
+$stmt->execute();
 
-header('Location: cli-crud-get.php?msg=' . urlencode('Klant succesvol gewijzigd.'));
-exit();
+// Beheerder keert terug naar cli-crud-get.php; klant naar index.php
+render_header('Wijzigen gelukt');
 ?>
+<main class="centering">
+    <h2>Wijzigen gelukt</h2>
+    <p>De gegevens zijn succesvol gewijzigd.</p>
+    <p>
+        <?php if (is_admin()): ?>
+            <a href="cli-crud-get.php"><button type="button">Terug naar onderhoud klanten</button></a>
+        <?php else: ?>
+            <a href="index.php"><button type="button">Terug naar home</button></a>
+        <?php endif; ?>
+    </p>
+</main>
+<?php render_footer(); ?>
