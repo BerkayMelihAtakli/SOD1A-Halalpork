@@ -10,13 +10,11 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST' || !isset($_POST['client_update'])) {
     exit();
 }
 
-// Alleen ingelogde klant
-if (!is_client()) {
+if (!is_admin() && !is_client()) {
     header('Location: inlog-client.php');
     exit();
 }
 
-// ID moet in sessie staan (gezet door cli-crud-upd.php)
 if (!isset($_SESSION['update_client_id'])) {
     header('Location: cli-crud-upd.php');
     exit();

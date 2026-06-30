@@ -10,13 +10,11 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST' || !isset($_POST['confirm_update'])) {
     exit();
 }
 
-// Alleen ingelogde klant
-if (!is_client()) {
+if (!is_admin() && !is_client()) {
     header('Location: inlog-client.php');
     exit();
 }
 
-// Gevalideerde gegevens moeten in sessie staan (gezet door cli-crud-upd01.php)
 if (!isset($_SESSION['pending_update'])) {
     header('Location: cli-crud-upd.php');
     exit();
@@ -26,8 +24,8 @@ $client = $_SESSION['pending_update'];
 $id     = (int)$client['id'];
 unset($_SESSION['pending_update'], $_SESSION['update_client_id']);
 
-// Veiligheidscheck: klant mag alleen eigen gegevens wijzigen
-if ($id !== (int)($_SESSION['welkNummerIsDit'] ?? 0)) {
+// Klant mag alleen eigen gegevens wijzigen
+if (is_client() && $id !== (int)($_SESSION['welkNummerIsDit'] ?? 0)) {
     header('Location: index.php');
     exit();
 }
@@ -63,12 +61,18 @@ if ($client['pswrd'] !== '') {
 $stmt->bindValue(':id', $id, PDO::PARAM_INT);
 $stmt->execute();
 
-// Bevestiging en terugkeer naar eigen menu
+// Beheerder keert terug naar cli-crud-get.php; klant naar index.php
 render_header('Wijzigen gelukt');
 ?>
 <main class="centering">
     <h2>Wijzigen gelukt</h2>
-    <p>Jouw gegevens zijn succesvol gewijzigd.</p>
-    <p><a href="index.php"><button type="button">Terug naar home</button></a></p>
+    <p>De gegevens zijn succesvol gewijzigd.</p>
+    <p>
+        <?php if (is_admin()): ?>
+            <a href="cli-crud-get.php"><button type="button">Terug naar onderhoud klanten</button></a>
+        <?php else: ?>
+            <a href="index.php"><button type="button">Terug naar home</button></a>
+        <?php endif; ?>
+    </p>
 </main>
 <?php render_footer(); ?>
