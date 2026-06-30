@@ -15,9 +15,10 @@ render_header('Inloggen');
         <button type="submit">Login als beheerder</button>
     </form>
 
-    <form action="client-login.php" method="post">
+    <form action="inlog-klant.php" method="get">
         <button type="submit">Login als klant</button>
     </form>
+    <p><small><a href="client-login.php">Demo-login als klant (geen wachtwoord vereist)</a></small></p>
 
     <p><a href="index.php">Terug naar home</a></p>
 </main>
