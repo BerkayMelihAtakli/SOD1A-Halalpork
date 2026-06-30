@@ -1,47 +1,48 @@
-<?php
+﻿<?php
 session_start();
 require_once 'dbconnect.php';
 require_once 'product_helpers.php';
-require_admin();
+
+// Alleen beheerders mogen dit overzicht bekijken
 render_header('Alle beheerders');
+require_admin();
 ?>
 <main class="centering">
     <h2>Alle beheerders</h2>
-    <?php
-    $sql = "SELECT c.id, c.first_name, c.last_name, c.email, c.adress, c.zipcode, c.city
-            FROM client c
-            WHERE c.isadmin = 'J' AND c.id > 0
-            ORDER BY c.last_name, c.first_name";
-    $stmt = $db->prepare($sql);
-    $stmt->execute();
-    $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
-    ?>
     <table class="tabledisp2">
         <thead>
             <tr>
-                <th>ID</th>
-                <th>Voornaam</th>
-                <th>Achternaam</th>
-                <th>E-mail</th>
-                <th>Adres</th>
-                <th>Postcode</th>
-                <th>Stad</th>
+                <td>Client ID</td>
+                <td>Voornaam</td>
+                <td>Achternaam</td>
+                <td>E-mail</td>
+                <td>Adres</td>
+                <td>Postcode</td>
+                <td>Woonplaats</td>
             </tr>
         </thead>
         <tbody>
-        <?php foreach ($rows as $row): ?>
-            <tr>
-                <td><?= h($row['id']) ?></td>
-                <td><?= h($row['first_name']) ?></td>
-                <td><?= h($row['last_name']) ?></td>
-                <td><?= h($row['email']) ?></td>
-                <td><?= h($row['adress']) ?></td>
-                <td><?= h($row['zipcode']) ?></td>
-                <td><?= h($row['city']) ?></td>
-            </tr>
-        <?php endforeach; ?>
+        <?php
+        // Haal alle klanten op waarbij isadmin = 'J'
+        $sql = "SELECT ID, first_name, last_name, email, adress, zipcode, city
+                FROM client
+                WHERE isadmin = 'J'
+                ORDER BY last_name, first_name";
+        $stmt = $db->prepare($sql);
+        $stmt->execute();
+        while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+            echo '<tr>';
+            echo '<td>' . h($row['ID'])         . '</td>';
+            echo '<td>' . h($row['first_name']) . '</td>';
+            echo '<td>' . h($row['last_name'])  . '</td>';
+            echo '<td>' . h($row['email'])      . '</td>';
+            echo '<td>' . h($row['adress'])     . '</td>';
+            echo '<td>' . h($row['zipcode'])    . '</td>';
+            echo '<td>' . h($row['city'])       . '</td>';
+            echo '</tr>';
+        }
+        ?>
         </tbody>
     </table>
-    <p><a href="index.php">Terug naar home</a></p>
 </main>
 <?php render_footer(); ?>
