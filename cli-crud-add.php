@@ -2,11 +2,13 @@
 session_start();
 require_once 'dbconnect.php';
 require_once 'client_helpers.php';
-render_header('Klant toevoegen');
-require_admin();
+
+$isAdmin = isset($_SESSION['SoortToegang']) && $_SESSION['SoortToegang'] === 'Beheer';
+$title   = $isAdmin ? 'Klant toevoegen' : 'Registreren';
+render_header($title);
 ?>
 <main class="centering">
-    <h2>Klant toevoegen</h2>
+    <h2><?php echo h($title); ?></h2>
     <?php
     if (isset($_SESSION['client_errors'])) {
         echo '<ul>';
@@ -22,8 +24,12 @@ require_admin();
     <form action="cli-crud-adding.php" method="post" class="tabledisp">
         <?php client_form_fields($db, $old, true); ?>
         <p>
-            <button type="submit" formaction="cli-crud-get.php">Breek af</button>
-            <input type="submit" name="client_add" value="Sla op">
+            <?php if ($isAdmin): ?>
+                <button type="submit" formaction="cli-crud-get.php">Breek af</button>
+            <?php else: ?>
+                <a href="inlog-klant.php">Al een account? Inloggen</a>
+            <?php endif; ?>
+            <input type="submit" name="client_add" value="<?php echo $isAdmin ? 'Sla op' : 'Registreren'; ?>">
         </p>
     </form>
 </main>
