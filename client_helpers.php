@@ -1,5 +1,5 @@
 ﻿<?php
-// Retorna true se o utilizador tem sessao de klant
+// Controleert of de ingelogde gebruiker een klant is
 function is_client() {
     return isset($_SESSION['SoortToegang']) && $_SESSION['SoortToegang'] === 'Klant';
 }

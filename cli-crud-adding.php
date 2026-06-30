@@ -37,11 +37,18 @@ $stmt->bindValue(':telephone',  $client['telephone']);
 $stmt->bindValue(':pswrd',      password_hash($client['pswrd'], PASSWORD_DEFAULT));
 $stmt->execute();
 
-render_header('Registreren gelukt');
+$adminGebruiker = is_admin();
+render_header($adminGebruiker ? 'Klant toegevoegd' : 'Registreren gelukt');
 ?>
 <main class="centering">
-    <h2>Registreren gelukt</h2>
-    <p>Jouw account is succesvol aangemaakt. Je kunt nu inloggen.</p>
-    <p><a href="inlog-client.php"><button type="button">Inloggen</button></a></p>
+    <?php if ($adminGebruiker): ?>
+        <h2>Klant succesvol toegevoegd</h2>
+        <p>De nieuwe klant is aangemaakt in de database.</p>
+        <p><a href="cli-crud-get.php"><button type="button">Terug naar onderhoud klanten</button></a></p>
+    <?php else: ?>
+        <h2>Registreren gelukt</h2>
+        <p>Jouw account is succesvol aangemaakt. Je kunt nu inloggen.</p>
+        <p><a href="inlog-client.php"><button type="button">Inloggen</button></a></p>
+    <?php endif; ?>
 </main>
 <?php render_footer(); ?>
