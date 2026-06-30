@@ -1,13 +1,20 @@
 <?php
 require_once 'product_helpers.php';
 
+function require_client() {
+    if (!isset($_SESSION['SoortToegang']) || $_SESSION['SoortToegang'] !== 'Klant') {
+        header('Location: inlog-client.php');
+        exit();
+    }
+}
+
 function fetch_countries($db) {
     $stmt = $db->query('SELECT idcountry, name FROM country ORDER BY name');
     return $stmt->fetchAll(PDO::FETCH_ASSOC);
 }
 
 function country_select($db, $selectedId = 0) {
-    echo '<label>Land</label><select name="country">';
+    echo '<label>Land <span style="color:red">*</span></label><select name="country" required>';
     echo '<option value="0">-- kies land --</option>';
     foreach (fetch_countries($db) as $c) {
         $sel = ((int)$c['idcountry'] === (int)$selectedId) ? ' selected' : '';
@@ -28,19 +35,40 @@ function validate_client_input(&$errors, $requirePassword = true) {
     $client['country']    = (int)($_POST['country']   ?? 0);
     $client['telephone']  = trim($_POST['telephone']  ?? '');
     $client['pswrd']      = $_POST['pswrd']           ?? '';
+    $pswrd_confirm        = $_POST['pswrd_confirm']   ?? '';
 
     if ($client['first_name'] === '' || !preg_match('/^[a-zA-ZÀ-ÿ \-]+$/u', $client['first_name'])) {
-        $errors[] = 'Voornaam is verplicht en mag alleen letters, spaties en koppeltekens bevatten.';
+        $errors[] = 'Voornaam is verplicht en mag alleen letters en spaties bevatten.';
     }
     if ($client['last_name'] === '' || !preg_match('/^[a-zA-ZÀ-ÿ \-]+$/u', $client['last_name'])) {
-        $errors[] = 'Achternaam is verplicht en mag alleen letters, spaties en koppeltekens bevatten.';
+        $errors[] = 'Achternaam is verplicht en mag alleen letters en spaties bevatten.';
     }
     if ($client['email'] === '' || !filter_var($client['email'], FILTER_VALIDATE_EMAIL)) {
         $errors[] = 'Voer een geldig e-mailadres in.';
     }
+    if ($client['adress'] === '' || !preg_match('/^[a-zA-ZÀ-ÿ0-9 ]+$/u', $client['adress'])) {
+        $errors[] = 'Adres is verplicht en mag alleen letters, cijfers en spaties bevatten.';
+    }
+    if ($client['zipcode'] === '' || !preg_match('/^[a-zA-Z0-9 ]+$/', $client['zipcode'])) {
+        $errors[] = 'Postcode is verplicht en mag alleen letters, cijfers en spaties bevatten.';
+    }
+    if ($client['city'] === '' || !preg_match('/^[a-zA-ZÀ-ÿ \-]+$/u', $client['city'])) {
+        $errors[] = 'Woonplaats is verplicht en mag alleen letters en spaties bevatten.';
+    }
+    if ($client['state'] !== '' && !preg_match('/^[a-zA-ZÀ-ÿ \-]+$/u', $client['state'])) {
+        $errors[] = 'Provincie/staat mag alleen letters en spaties bevatten.';
+    }
+    if ($client['country'] <= 0) {
+        $errors[] = 'Kies een land.';
+    }
+    if ($client['telephone'] !== '' && !preg_match('/^[\d ]+$/', $client['telephone'])) {
+        $errors[] = 'Telefoonnummer mag alleen cijfers en spaties bevatten.';
+    }
     if ($requirePassword) {
         if (strlen($client['pswrd']) < 6) {
             $errors[] = 'Wachtwoord is verplicht en moet minimaal 6 tekens bevatten.';
+        } elseif ($client['pswrd'] !== $pswrd_confirm) {
+            $errors[] = 'De twee wachtwoorden komen niet overeen.';
         }
     }
     return $client;
@@ -57,17 +85,18 @@ function client_form_fields($db, $data = [], $showPassword = true) {
     $tel = $data['telephone']  ?? '';
     $cou = $data['country']    ?? 0;
 
-    echo '<label>Voornaam</label><input type="text" name="first_name" value="' . h($fn) . '" required>';
-    echo '<label>Achternaam</label><input type="text" name="last_name" value="' . h($ln) . '" required>';
-    echo '<label>E-mail</label><input type="email" name="email" value="' . h($em) . '" required>';
-    echo '<label>Adres</label><input type="text" name="adress" value="' . h($adr) . '">';
-    echo '<label>Postcode</label><input type="text" name="zipcode" value="' . h($zip) . '">';
-    echo '<label>Woonplaats</label><input type="text" name="city" value="' . h($cit) . '">';
+    echo '<label>Voornaam <span style="color:red">*</span></label><input type="text" name="first_name" value="' . h($fn) . '" required>';
+    echo '<label>Achternaam <span style="color:red">*</span></label><input type="text" name="last_name" value="' . h($ln) . '" required>';
+    echo '<label>E-mail <span style="color:red">*</span></label><input type="email" name="email" value="' . h($em) . '" required>';
+    echo '<label>Adres <span style="color:red">*</span></label><input type="text" name="adress" value="' . h($adr) . '" required>';
+    echo '<label>Postcode <span style="color:red">*</span></label><input type="text" name="zipcode" value="' . h($zip) . '" required>';
+    echo '<label>Woonplaats <span style="color:red">*</span></label><input type="text" name="city" value="' . h($cit) . '" required>';
     echo '<label>Provincie/staat</label><input type="text" name="state" value="' . h($sta) . '">';
     country_select($db, $cou);
     echo '<label>Telefoonnummer</label><input type="text" name="telephone" value="' . h($tel) . '">';
     if ($showPassword) {
-        echo '<label>Wachtwoord</label><input type="password" name="pswrd" placeholder="Minimaal 6 tekens">';
+        echo '<label>Wachtwoord <span style="color:red">*</span></label><input type="password" name="pswrd" placeholder="Minimaal 6 tekens" required>';
+        echo '<label>Herhaal wachtwoord <span style="color:red">*</span></label><input type="password" name="pswrd_confirm" required>';
     }
 }
 ?>

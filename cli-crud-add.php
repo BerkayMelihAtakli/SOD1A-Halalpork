@@ -13,7 +13,7 @@ render_header($title);
     if (isset($_SESSION['client_errors'])) {
         echo '<ul>';
         foreach ($_SESSION['client_errors'] as $error) {
-            echo '<li>' . h($error) . '</li>';
+            echo '<li style="color:red">' . h($error) . '</li>';
         }
         echo '</ul>';
         unset($_SESSION['client_errors']);
@@ -21,15 +21,15 @@ render_header($title);
     $old = $_SESSION['old_client'] ?? [];
     unset($_SESSION['old_client']);
     ?>
-    <form action="cli-crud-adding.php" method="post" class="tabledisp">
+    <form action="cli-crud-add01.php" method="post" class="tabledisp">
         <?php client_form_fields($db, $old, true); ?>
         <p>
             <?php if ($isAdmin): ?>
                 <button type="submit" formaction="cli-crud-get.php">Breek af</button>
             <?php else: ?>
-                <a href="inlog-klant.php">Al een account? Inloggen</a>
+                <a href="inlog-client.php">Al een account? Inloggen</a>&nbsp;
             <?php endif; ?>
-            <input type="submit" name="client_add" value="<?php echo $isAdmin ? 'Sla op' : 'Registreren'; ?>">
+            <input type="submit" value="Verder">
         </p>
     </form>
 </main>
