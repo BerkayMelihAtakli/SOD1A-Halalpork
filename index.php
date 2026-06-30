@@ -41,7 +41,8 @@ $klantId     = (int)($_SESSION['welkNummerIsDit'] ?? 0);
                 <a href="cli-crud-upd.php?id=<?= $klantId ?>" class="hp-btn-outline">Mijn gegevens</a>
             <?php else: ?>
                 <a href="pur-crud-add.php" class="hp-btn-primary">Bestel nu</a>
-                <a href="cli-crud-add.php" class="hp-btn-outline">Registreer gratis</a>
+                <a href="inlog-client.php" class="hp-btn-outline">Inloggen</a>
+                <a href="cli-crud-add.php" class="hp-btn-outline">Registreer</a>
             <?php endif; ?>
         </div>
     </div>
