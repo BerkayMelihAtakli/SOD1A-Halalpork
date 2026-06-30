@@ -1,0 +1,311 @@
+﻿<!DOCTYPE html>
+<html lang="nl">
+<head>
+<meta charset="UTF-8">
+<title>Taakverslag – Angel Medina – SOD1A Halalpork</title>
+<style>
+  body { font-family: Calibri, Arial, sans-serif; margin: 40px; color: #1a1a1a; font-size: 11pt; line-height: 1.5; }
+  h1 { font-size: 20pt; color: #2c3e50; border-bottom: 3px solid #2c3e50; padding-bottom: 8px; }
+  h2 { font-size: 14pt; color: #1a5276; margin-top: 32px; border-bottom: 1px solid #aed6f1; padding-bottom: 4px; }
+  h3 { font-size: 11pt; color: #1a5276; margin-bottom: 4px; }
+  table { border-collapse: collapse; width: 100%; margin: 12px 0; }
+  th { background: #2c3e50; color: white; padding: 6px 10px; text-align: left; font-size: 10pt; }
+  td { border: 1px solid #ccc; padding: 6px 10px; font-size: 10pt; vertical-align: top; }
+  tr:nth-child(even) td { background: #f4f6f8; }
+  .ok { color: #1e8449; font-weight: bold; }
+  .fix { color: #d35400; font-weight: bold; }
+  .file { font-family: Consolas, monospace; background: #f0f0f0; padding: 1px 5px; border-radius: 3px; font-size: 10pt; }
+  .branch { font-family: Consolas, monospace; background: #d6eaf8; padding: 2px 6px; border-radius: 3px; font-size: 10pt; }
+  .section { background: #eaf4fb; border-left: 4px solid #2980b9; padding: 10px 14px; margin: 14px 0; }
+  ul { margin: 6px 0; padding-left: 20px; }
+  li { margin: 3px 0; }
+  .page-break { page-break-before: always; }
+  .header-info { background: #f8f9fa; border: 1px solid #dee2e6; padding: 12px; border-radius: 4px; margin-bottom: 20px; }
+</style>
+</head>
+<body>
+
+<h1>Taakverslag – Userstories Sprint A</h1>
+<div class="header-info">
+  <strong>Student:</strong> Angel Medina &nbsp;|&nbsp;
+  <strong>Project:</strong> SOD1A – The Bread Company (Halalpork) &nbsp;|&nbsp;
+  <strong>Datum:</strong> 1 juli 2026<br>
+  <strong>Repository:</strong> BerkayMelihAtakli/SOD1A-Halalpork &nbsp;|&nbsp;
+  <strong>Basis commit (main):</strong> c65bd4e – "client id 1 fixed"
+</div>
+
+<div class="section">
+  <strong>Overzicht van alle branches en hun status:</strong>
+  <table>
+    <tr><th>Branch</th><th>Taak</th><th>Bestanden</th><th>Status</th></tr>
+    <tr><td><span class="branch">A01-01c</span></td><td>A01-01 – Create (registreren)</td><td>client_helpers.php, cli-crud-add.php, cli-crud-add01.php, cli-crud-adding.php</td><td><span class="ok">✓ Klaar</span></td></tr>
+    <tr><td><span class="branch">A01-01r</span></td><td>A01-01 – Read (overzicht)</td><td>cli-crud-shw.php</td><td><span class="ok">✓ Klaar</span></td></tr>
+    <tr><td><span class="branch">A01-01u</span></td><td>A01-01 – Update (wijzigen)</td><td>cli-crud-upd.php, cli-crud-upd01.php, cli-crud-update.php, client_helpers.php</td><td><span class="ok">✓ Klaar (bugfix toegepast)</span></td></tr>
+    <tr><td><span class="branch">A01-01d</span></td><td>A01-01 – Delete (verwijderen)</td><td>cli-crud-get.php, cli-crud-del.php, cli-crud-delete.php</td><td><span class="ok">✓ Klaar</span></td></tr>
+    <tr><td><span class="branch">A02-01</span></td><td>Inloggen klant</td><td>inlog-client.php, inlog-client-exec.php</td><td><span class="ok">✓ Klaar</span></td></tr>
+    <tr><td><span class="branch">A02-02</span></td><td>Beheerrechten toekennen</td><td>admin-add.php, admin-add01.php, admin-adding.php</td><td><span class="ok">✓ Klaar</span></td></tr>
+    <tr><td><span class="branch">A03-01</span></td><td>Klanten met aankopen</td><td>cli-shw-pur.php</td><td><span class="ok">✓ Klaar</span></td></tr>
+    <tr><td><span class="branch">A03-02</span></td><td>Klanten zonder aankopen</td><td>cli-shw-nopur.php</td><td><span class="ok">✓ Klaar</span></td></tr>
+    <tr><td><span class="branch">A03-03</span></td><td>Alle beheerders</td><td>cli-shw-admin.php</td><td><span class="ok">✓ Klaar</span></td></tr>
+  </table>
+</div>
+
+<!-- ==================== A01-01c ==================== -->
+<h2>A01-01c – Create: Registreren (branch: A01-01c)</h2>
+
+<h3>Wat is er gebouwd?</h3>
+<p>Een 3-staps registratieflow voor nieuwe klanten: formulier → validatie + bevestiging → opslaan in database.</p>
+
+<h3>Bestanden</h3>
+<table>
+  <tr><th>Bestand</th><th>Functie</th></tr>
+  <tr><td><span class="file">client_helpers.php</span></td><td>Gedeeld hulpbestand met functies: <code>is_client()</code>, <code>client_form_fields()</code>, <code>validate_client_input()</code></td></tr>
+  <tr><td><span class="file">cli-crud-add.php</span></td><td>Toont het registratieformulier. Formulier verwijst naar cli-crud-add01.php.</td></tr>
+  <tr><td><span class="file">cli-crud-add01.php</span></td><td>Valideert alle invoer. Bij fouten: terug naar formulier. Bij succes: toont bevestigingspagina (zonder wachtwoord).</td></tr>
+  <tr><td><span class="file">cli-crud-adding.php</span></td><td>Sla de nieuwe klant op met <code>password_hash()</code> en <code>isadmin = 'N'</code>.</td></tr>
+</table>
+
+<h3>Spec-verificatie</h3>
+<table>
+  <tr><th>Spec-eis</th><th>Geïmplementeerd?</th><th>Toelichting</th></tr>
+  <tr><td>id is AUTO_INCREMENT, niet in formulier</td><td><span class="ok">✓</span></td><td>Geen id-veld in formulier. Database vult dit automatisch in.</td></tr>
+  <tr><td>first_name verplicht, alleen letters/spaties</td><td><span class="ok">✓</span></td><td>Regex-validatie in validate_client_input() + HTML required-attribuut</td></tr>
+  <tr><td>last_name verplicht, alleen letters/spaties</td><td><span class="ok">✓</span></td><td>Idem</td></tr>
+  <tr><td>email verplicht, geldig formaat, uniek in DB</td><td><span class="ok">✓</span></td><td>filter_var() + SELECT COUNT(*) met bindValue</td></tr>
+  <tr><td>adress verplicht, letters/spaties/cijfers</td><td><span class="ok">✓</span></td><td>Regex-validatie</td></tr>
+  <tr><td>zipcode verplicht, letters/spaties/cijfers</td><td><span class="ok">✓</span></td><td>Regex-validatie</td></tr>
+  <tr><td>city verplicht, letters/spaties</td><td><span class="ok">✓</span></td><td>Regex-validatie</td></tr>
+  <tr><td>state optioneel, indien ingevuld letters/spaties</td><td><span class="ok">✓</span></td><td>Wordt alleen gevalideerd als het ingevuld is</td></tr>
+  <tr><td>country dropdown uit country-tabel, slaat idcountry op</td><td><span class="ok">✓</span></td><td>SELECT idcountry, name FROM country; slaat idcountry op</td></tr>
+  <tr><td>telephone optioneel, cijfers/spaties</td><td><span class="ok">✓</span></td><td>Idem als state</td></tr>
+  <tr><td>isadmin NIET in formulier, programma vult 'N' in</td><td><span class="ok">✓</span></td><td>Hardcoded 'N' in INSERT-query</td></tr>
+  <tr><td>pswrd 2x invullen, moeten gelijk zijn, gehasht</td><td><span class="ok">✓</span></td><td>Twee password-velden; vergelijking; password_hash() in adding.php</td></tr>
+  <tr><td>Wachtwoord NIET getoond bij bevestiging</td><td><span class="ok">✓</span></td><td>add01.php toont nooit de wachtwoordwaarde</td></tr>
+  <tr><td>3-staps flow: add → add01 → adding</td><td><span class="ok">✓</span></td><td>Sessie-verificatie in elke stap; direct URL-toegang leidt terug naar stap 1</td></tr>
+  <tr><td>PDO en bindValue gebruikt</td><td><span class="ok">✓</span></td><td>Alle DB-queries via PDO met bindValue()</td></tr>
+</table>
+
+<!-- ==================== A01-01r ==================== -->
+<div class="page-break"></div>
+<h2>A01-01r – Read: Klantenoverzicht (branch: A01-01r)</h2>
+
+<h3>Wat is er gebouwd?</h3>
+<p>Een overzichtspagina van alle klanten. Alleen zichtbaar voor ingelogde beheerders.</p>
+
+<h3>Bestanden</h3>
+<table>
+  <tr><th>Bestand</th><th>Functie</th></tr>
+  <tr><td><span class="file">cli-crud-shw.php</span></td><td>Toont alle klanten in een tabel met de gevraagde kolommen.</td></tr>
+</table>
+
+<h3>Spec-verificatie</h3>
+<table>
+  <tr><th>Spec-eis</th><th>Geïmplementeerd?</th><th>Toelichting</th></tr>
+  <tr><td>Alleen beheerder mag dit zien</td><td><span class="ok">✓</span></td><td>require_admin() na render_header()</td></tr>
+  <tr><td>Kolommen: first_name, last_name, email, city, country (name)</td><td><span class="ok">✓</span></td><td>LEFT JOIN country; alle 5 kolommen aanwezig</td></tr>
+  <tr><td>PDO gebruikt</td><td><span class="ok">✓</span></td><td>$db->prepare() + execute()</td></tr>
+</table>
+
+<!-- ==================== A01-01u ==================== -->
+<h2>A01-01u – Update: Klant wijzigen (branch: A01-01u)</h2>
+
+<h3>Wat is er gebouwd?</h3>
+<p>Een 3-staps wijzigingsflow. De ingelogde klant kan alleen eigen gegevens wijzigen. De beheerder kan via cli-crud-get.php ook gegevens van elke klant wijzigen.</p>
+
+<div class="section">
+  <strong><span class="fix">⚠ Bug gevonden en gecorrigeerd:</span></strong> De eerste versie van cli-crud-upd.php blokkeerde beheerders. Maar de spec vereist dat de "Wijzigen"-knop in cli-crud-get.php naar cli-crud-upd.php verwijst — dus moest ook de beheerder dit programma kunnen gebruiken. Bovendien ontbrak client_helpers.php in dit branch. Beide zijn hersteld in een tweede commit.
+</div>
+
+<h3>Bestanden</h3>
+<table>
+  <tr><th>Bestand</th><th>Functie</th></tr>
+  <tr><td><span class="file">cli-crud-upd.php</span></td><td>Toont het wijzigingsformulier. Klant: ID uit sessie. Beheerder: client_id via POST/GET.</td></tr>
+  <tr><td><span class="file">cli-crud-upd01.php</span></td><td>Valideert de gewijzigde invoer en toont een bevestigingspagina.</td></tr>
+  <tr><td><span class="file">cli-crud-update.php</span></td><td>Voert de UPDATE uit. Klant → index.php. Beheerder → cli-crud-get.php.</td></tr>
+  <tr><td><span class="file">client_helpers.php</span></td><td>Kopie van het gedeelde hulpbestand (ook in A01-01c).</td></tr>
+</table>
+
+<h3>Spec-verificatie</h3>
+<table>
+  <tr><th>Spec-eis</th><th>Geïmplementeerd?</th><th>Toelichting</th></tr>
+  <tr><td>Alleen ingelogde klant mag eigen data wijzigen</td><td><span class="ok">✓</span></td><td>is_client() check; klant kan alleen eigen ID uit sessie gebruiken</td></tr>
+  <tr><td>Geen primary key in formulier voor klant</td><td><span class="ok">✓</span></td><td>ID uit $_SESSION['welkNummerIsDit']</td></tr>
+  <tr><td>Velden: first_name t/m telephone (niet isadmin/pswrd verplicht)</td><td><span class="ok">✓</span></td><td>Alle gevraagde velden in formulier; pswrd optioneel bij update</td></tr>
+  <tr><td>Bevestiging in cli-crud-upd01.php met alle controles</td><td><span class="ok">✓</span></td><td>validate_client_input() met $excludeId voor e-mailcheck</td></tr>
+  <tr><td>Opslaan in cli-crud-update.php</td><td><span class="ok">✓</span></td><td>UPDATE via PDO bindValue(); apart SQL voor met/zonder wachtwoord</td></tr>
+  <tr><td>Klant keert terug naar eigen menu (index.php)</td><td><span class="ok">✓</span></td><td>Redirect naar index.php na geslaagde update</td></tr>
+  <tr><td>Beheerder keert terug naar cli-crud-get.php</td><td><span class="ok">✓</span></td><td>is_admin() → redirect naar cli-crud-get.php</td></tr>
+</table>
+
+<!-- ==================== A01-01d ==================== -->
+<div class="page-break"></div>
+<h2>A01-01d – Delete: Klant verwijderen (branch: A01-01d)</h2>
+
+<h3>Wat is er gebouwd?</h3>
+<p>Een overzicht van alle klanten met per rij twee knoppen (Wijzigen / Verwijderen). Verwijderen gaat via een bevestigingsstap met twee beveiligingschecks.</p>
+
+<h3>Bestanden</h3>
+<table>
+  <tr><th>Bestand</th><th>Functie</th></tr>
+  <tr><td><span class="file">cli-crud-get.php</span></td><td>Overzicht van alle klanten met Wijzigen- en Verwijderen-knoppen. Alleen voor beheerder.</td></tr>
+  <tr><td><span class="file">cli-crud-del.php</span></td><td>Controleert openstaande bestellingen en isadmin. Toont bevestigingsvraag.</td></tr>
+  <tr><td><span class="file">cli-crud-delete.php</span></td><td>Voert de DELETE uit na sessie-verificatie. Dubbele veiligheidschecks.</td></tr>
+</table>
+
+<h3>Spec-verificatie</h3>
+<table>
+  <tr><th>Spec-eis</th><th>Geïmplementeerd?</th><th>Toelichting</th></tr>
+  <tr><td>Overzicht alle klanten, per klant Wijzigen + Verwijderen</td><td><span class="ok">✓</span></td><td>cli-crud-get.php: tabel met 2 form-knoppen per rij</td></tr>
+  <tr><td>Wijzigen → cli-crud-upd.php; na afhandeling → cli-crud-get.php</td><td><span class="ok">✓</span></td><td>POST naar cli-crud-upd.php; update.php stuurt admin terug naar cli-crud-get.php</td></tr>
+  <tr><td>Check openstaande bestellingen (delivered = 0)</td><td><span class="ok">✓</span></td><td>SELECT COUNT(*) FROM purchase WHERE clientid = :id AND delivered = 0</td></tr>
+  <tr><td>Foutmelding "Klant mag niet verwijderd worden vanwege openstaande bestellingen"</td><td><span class="ok">✓</span></td><td>Exacte tekst als in spec</td></tr>
+  <tr><td>Check isadmin = 'J'</td><td><span class="ok">✓</span></td><td>Gecontroleerd NA de bestelling-check</td></tr>
+  <tr><td>Foutmelding "Klant is beheerder en mag niet verwijderd worden"</td><td><span class="ok">✓</span></td><td>Exacte tekst als in spec</td></tr>
+  <tr><td>Bevestigingsvraag met alle klantgegevens</td><td><span class="ok">✓</span></td><td>cli-crud-del.php toont alle velden in tabel</td></tr>
+  <tr><td>Na bevestiging → cli-crud-delete.php → terug naar cli-crud-get.php</td><td><span class="ok">✓</span></td><td>Sessie-ID verificatie; DELETE; redirect met bevestigingsbericht</td></tr>
+  <tr><td>Dubbele check in delete.php</td><td><span class="ok">✓</span></td><td>isadmin en openstaande bestellingen ook in cli-crud-delete.php gecheckt</td></tr>
+</table>
+
+<!-- ==================== A02-01 ==================== -->
+<h2>A02-01 – Inloggen klant (branch: A02-01)</h2>
+
+<h3>Wat is er gebouwd?</h3>
+<p>Een inlogpagina voor klanten met e-mail en wachtwoord, en een exec-pagina die de authenticatie verwerkt.</p>
+
+<h3>Bestanden</h3>
+<table>
+  <tr><th>Bestand</th><th>Functie</th></tr>
+  <tr><td><span class="file">inlog-client.php</span></td><td>Toont het inlogformulier met e-mail, wachtwoord, "Breek af" en "Log in".</td></tr>
+  <tr><td><span class="file">inlog-client-exec.php</span></td><td>Verwerkt de login: e-mailcheck, uniciteitscheck, password_verify(), sessie instellen.</td></tr>
+</table>
+
+<h3>Spec-verificatie</h3>
+<table>
+  <tr><th>Spec-eis</th><th>Geïmplementeerd?</th><th>Toelichting</th></tr>
+  <tr><td>Formulier met e-mail en wachtwoord</td><td><span class="ok">✓</span></td><td>inlog-client.php met twee velden</td></tr>
+  <tr><td>Knop "Breek af" → homepage</td><td><span class="ok">✓</span></td><td>Link naar index.php</td></tr>
+  <tr><td>Knop "Log in" → inlog-client-exec.php</td><td><span class="ok">✓</span></td><td>form action="inlog-client-exec.php" method="post"</td></tr>
+  <tr><td>exec.php ALLEEN bereikbaar via POST</td><td><span class="ok">✓</span></td><td>REQUEST_METHOD !== 'POST' → redirect naar inlog-client.php</td></tr>
+  <tr><td>E-mail geldig formaat</td><td><span class="ok">✓</span></td><td>filter_var() FILTER_VALIDATE_EMAIL</td></tr>
+  <tr><td>E-mail precies 1x in DB</td><td><span class="ok">✓</span></td><td>fetchAll(); count($rows) !== 1 → foutmelding</td></tr>
+  <tr><td>Foutmelding "Combinatie van email-adres en wachtwoord is niet correct"</td><td><span class="ok">✓</span></td><td>Exacte tekst; keert terug naar homepage (index.php)</td></tr>
+  <tr><td>password_verify() gebruikt</td><td><span class="ok">✓</span></td><td>password_verify($wachtwoord, $client['pswrd'])</td></tr>
+  <tr><td>Sessievariabelen: benJeErAl, welkNummerIsDit, wieBenJeDan, SoortToegang</td><td><span class="ok">✓</span></td><td>Alle 4 variabelen worden ingesteld; SoortToegang = 'Klant'</td></tr>
+  <tr><td>Bericht "Welkom [naam], inloggen is gelukt"</td><td><span class="ok">✓</span></td><td>Via URL-parameter naar index.php</td></tr>
+</table>
+
+<!-- ==================== A02-02 ==================== -->
+<div class="page-break"></div>
+<h2>A02-02 – Beheerrechten toekennen (branch: A02-02)</h2>
+
+<h3>Wat is er gebouwd?</h3>
+<p>Een 3-staps flow voor beheerders om andere klanten beheerrechten te geven.</p>
+
+<h3>Bestanden</h3>
+<table>
+  <tr><th>Bestand</th><th>Functie</th></tr>
+  <tr><td><span class="file">admin-add.php</span></td><td>Stap 1: Overzicht van alle klanten zonder beheerrechten (id &lt;&gt; 0) met "Maak beheerder"-knop.</td></tr>
+  <tr><td><span class="file">admin-add01.php</span></td><td>Stap 2: Toont alle gegevens van de geselecteerde klant. Knoppen "Breek af" en "Bevestigen".</td></tr>
+  <tr><td><span class="file">admin-adding.php</span></td><td>Stap 3: Controleert nog eens of klant bestaat en geen admin is. Voert UPDATE isadmin='J' uit.</td></tr>
+</table>
+
+<h3>Spec-verificatie</h3>
+<table>
+  <tr><th>Spec-eis</th><th>Geïmplementeerd?</th><th>Toelichting</th></tr>
+  <tr><td>Alleen beheerder mag dit gebruiken</td><td><span class="ok">✓</span></td><td>require_admin() in alle 3 bestanden</td></tr>
+  <tr><td>Stap 1: klanten zonder rechten EN id &lt;&gt; 0</td><td><span class="ok">✓</span></td><td>WHERE isadmin = 'N' AND id &lt;&gt; 0</td></tr>
+  <tr><td>Kolommen stap 1: id, first_name, last_name, email, city + knop</td><td><span class="ok">✓</span></td><td>Alle gevraagde kolommen aanwezig</td></tr>
+  <tr><td>Knop "Maak beheerder" → admin-add01.php via POST</td><td><span class="ok">✓</span></td><td>Elk formulier per rij; POST met client_id</td></tr>
+  <tr><td>Stap 2 alleen bereikbaar via POST vanuit stap 1</td><td><span class="ok">✓</span></td><td>REQUEST_METHOD !== 'POST' → terug naar admin-add.php</td></tr>
+  <tr><td>Stap 2: titel "Bevestig toekennen beheerrechten"</td><td><span class="ok">✓</span></td><td>Exacte tekst als in spec</td></tr>
+  <tr><td>Stap 2: alle gegevens klant getoond</td><td><span class="ok">✓</span></td><td>Alle velden inclusief land in tabel</td></tr>
+  <tr><td>Knop "Breek af" → homepage (index.php)</td><td><span class="ok">✓</span></td><td>Link naar index.php</td></tr>
+  <tr><td>Knop "Bevestigen" → admin-adding.php</td><td><span class="ok">✓</span></td><td>form action="admin-adding.php" method="post"</td></tr>
+  <tr><td>Stap 3 alleen bereikbaar via POST vanuit stap 2</td><td><span class="ok">✓</span></td><td>confirm_admin POST-veld + $_SESSION['admin_add_id'] verificatie</td></tr>
+  <tr><td>Stap 3: controleer of klant nog bestaat en nog geen admin is</td><td><span class="ok">✓</span></td><td>SELECT + check isadmin; aparte foutmeldingen</td></tr>
+  <tr><td>UPDATE isadmin = 'J' via PDO bindValue</td><td><span class="ok">✓</span></td><td>$upd->bindValue(':id', $id, PDO::PARAM_INT)</td></tr>
+  <tr><td>Bevestiging + terug naar homepage beheerder</td><td><span class="ok">✓</span></td><td>Melding op scherm + knop naar index.php</td></tr>
+</table>
+
+<!-- ==================== A03 ==================== -->
+<h2>A03-01 – Overzicht klanten met aankopen (branch: A03-01)</h2>
+
+<h3>Wat is er gebouwd?</h3>
+<p>Een overzichtspagina voor beheerders met alle klanten en hun aankopen via een INNER JOIN.</p>
+
+<h3>Spec-verificatie</h3>
+<table>
+  <tr><th>Spec-eis</th><th>Geïmplementeerd?</th><th>Toelichting</th></tr>
+  <tr><td>Bestandsnaam: cli-shw-pur.php</td><td><span class="ok">✓</span></td><td></td></tr>
+  <tr><td>Titel: "Alle klanten met hun aankopen"</td><td><span class="ok">✓</span></td><td>Exacte tekst</td></tr>
+  <tr><td>Kolommen: client.ID, first_name, last_name, city, purchase.id, purchasedate, delivered</td><td><span class="ok">✓</span></td><td>Alle 7 kolommen aanwezig</td></tr>
+  <tr><td>INNER JOIN purchase</td><td><span class="ok">✓</span></td><td>Alleen klanten met minimaal 1 aankoop worden getoond</td></tr>
+  <tr><td>Alleen beheerder</td><td><span class="ok">✓</span></td><td>require_admin()</td></tr>
+</table>
+
+<h2>A03-02 – Overzicht klanten zonder aankopen (branch: A03-02)</h2>
+
+<h3>Spec-verificatie</h3>
+<table>
+  <tr><th>Spec-eis</th><th>Geïmplementeerd?</th><th>Toelichting</th></tr>
+  <tr><td>Bestandsnaam: cli-shw-nopur.php</td><td><span class="ok">✓</span></td><td></td></tr>
+  <tr><td>Titel: "Alle klanten zonder aankopen"</td><td><span class="ok">✓</span></td><td>Exacte tekst</td></tr>
+  <tr><td>Kolommen: client.ID, first_name, last_name, city</td><td><span class="ok">✓</span></td><td>Alle 4 kolommen aanwezig</td></tr>
+  <tr><td>WHERE client.id NOT IN (SELECT DISTINCT clientid FROM purchase)</td><td><span class="ok">✓</span></td><td>Exacte query-structuur als in spec vereist</td></tr>
+  <tr><td>Alleen beheerder</td><td><span class="ok">✓</span></td><td>require_admin()</td></tr>
+</table>
+
+<h2>A03-03 – Overzicht alle beheerders (branch: A03-03)</h2>
+
+<h3>Spec-verificatie</h3>
+<table>
+  <tr><th>Spec-eis</th><th>Geïmplementeerd?</th><th>Toelichting</th></tr>
+  <tr><td>Bestandsnaam: cli-shw-admin.php</td><td><span class="ok">✓</span></td><td></td></tr>
+  <tr><td>Titel: "Alle beheerders"</td><td><span class="ok">✓</span></td><td>Exacte tekst</td></tr>
+  <tr><td>Kolommen: client.ID, first_name, last_name, email, adress, zipcode, city</td><td><span class="ok">✓</span></td><td>Alle 7 kolommen aanwezig</td></tr>
+  <tr><td>WHERE isadmin = 'J'</td><td><span class="ok">✓</span></td><td>Exacte conditie</td></tr>
+  <tr><td>Alleen beheerder</td><td><span class="ok">✓</span></td><td>require_admin()</td></tr>
+</table>
+
+<!-- ==================== SAMENVATTING ==================== -->
+<div class="page-break"></div>
+<h2>Samenvatting – Gevonden en Gecorrigeerde Bugs</h2>
+
+<table>
+  <tr><th>Bug</th><th>Bestand</th><th>Probleem</th><th>Oplossing</th></tr>
+  <tr>
+    <td>1</td>
+    <td><span class="file">cli-crud-upd.php</span></td>
+    <td>Alleen klanten werden toegelaten (is_client()). Maar de spec vereist dat ook beheerders via cli-crud-get.php naar dit programma kunnen gaan om klantgegevens te wijzigen.</td>
+    <td>Uitgebreid naar is_admin() || is_client(). Beheerder leest client_id via POST; klant gebruikt sessie-ID.</td>
+  </tr>
+  <tr>
+    <td>2</td>
+    <td><span class="file">cli-crud-update.php</span></td>
+    <td>Na opslaan ging iedereen naar index.php. Spec zegt: beheerder moet terug naar cli-crud-get.php.</td>
+    <td>is_admin() → redirect naar cli-crud-get.php; is_client() → redirect naar index.php.</td>
+  </tr>
+  <tr>
+    <td>3</td>
+    <td><span class="file">client_helpers.php</span></td>
+    <td>Ontbrak in branch A01-01u. De update-bestanden gebruiken require_once 'client_helpers.php', maar dat bestand bestond alleen in A01-01c.</td>
+    <td>client_helpers.php gekopieerd naar A01-01u en meegecommit.</td>
+  </tr>
+</table>
+
+<h2>Technische Kwaliteitschecklist</h2>
+<table>
+  <tr><th>Eis</th><th>Status</th></tr>
+  <tr><td>PDO gebruikt voor alle DB-verbindingen</td><td><span class="ok">✓ In alle bestanden</span></td></tr>
+  <tr><td>bindValue() gebruikt (geen string-concatenatie in queries)</td><td><span class="ok">✓ In alle bestanden</span></td></tr>
+  <tr><td>POST method voor formulieren</td><td><span class="ok">✓ In alle bestanden</span></td></tr>
+  <tr><td>Sessie-verificatie tussen stappen</td><td><span class="ok">✓ add01→adding, upd01→update, add01→adding (admin)</span></td></tr>
+  <tr><td>htmlspecialchars / h() voor alle output</td><td><span class="ok">✓ Via h() uit product_helpers.php</span></td></tr>
+  <tr><td>Wachtwoord gehasht met password_hash(PASSWORD_DEFAULT)</td><td><span class="ok">✓ cli-crud-adding.php en cli-crud-update.php</span></td></tr>
+  <tr><td>Wachtwoord geverifieerd met password_verify()</td><td><span class="ok">✓ inlog-client-exec.php</span></td></tr>
+  <tr><td>Commentaar in de code (NL)</td><td><span class="ok">✓ Alle bestanden hebben inline commentaar</span></td></tr>
+</table>
+
+<p style="margin-top:40px; color:#888; font-size:9pt;">Gegenereerd op 1 juli 2026 – Angel Medina / SOD1A Halalpork</p>
+</body>
+</html>
