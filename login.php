@@ -16,6 +16,7 @@ render_header('Inloggen');
     <form action="inlog-klant.php" method="get">
         <button type="submit">Login als klant</button>
     </form>
+    <p><small><a href="client-login.php">Demo-login als klant (geen wachtwoord vereist)</a></small></p>
 
     <p>Nog geen account? <a href="cli-crud-add.php">Registreren</a></p>
     <p><a href="index.php">Terug naar home</a></p>
