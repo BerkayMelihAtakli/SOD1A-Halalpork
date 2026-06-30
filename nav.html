@@ -6,21 +6,18 @@ $klantId = (int)($_SESSION['welkNummerIsDit'] ?? 0);
 <nav class="hp-nav">
   <div class="hp-nav-inner">
 
-    <!-- Logo -->
-    <a href="index.php" class="hp-nav-logo">
-      <span class="hp-nav-logo-halal">The Bread</span><span class="hp-nav-logo-pork">Company</span>
+    <a href="index.php" class="hp-logo">
+      <span class="hp-logo-a">Halal</span><span class="hp-logo-b">Pork</span>
     </a>
 
-    <!-- Links -->
     <div class="hp-nav-links">
-      <a href="index.php" class="hp-nav-link">Home</a>
+      <a href="index.php" class="hp-link">Home</a>
 
       <?php if ($toegang === 'Beheer'): ?>
 
-        <!-- BEHEERDER -->
-        <div class="hp-nav-dropdown">
-          <button class="hp-nav-link hp-nav-btn">Overzicht <span class="hp-chevron">&#8964;</span></button>
-          <div class="hp-nav-drop">
+        <div class="hp-drop-wrap">
+          <button class="hp-link hp-drop-btn">Overzicht <svg class="hp-chev" viewBox="0 0 16 16" fill="none"><path d="M4 6l4 4 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+          <div class="hp-drop">
             <a href="cat-crud-shw.php">Categorieën</a>
             <a href="cli-crud-shw.php">Klanten</a>
             <a href="sup-crud-shw.php">Leveranciers</a>
@@ -30,9 +27,9 @@ $klantId = (int)($_SESSION['welkNummerIsDit'] ?? 0);
           </div>
         </div>
 
-        <div class="hp-nav-dropdown">
-          <button class="hp-nav-link hp-nav-btn">Bedrijf <span class="hp-chevron">&#8964;</span></button>
-          <div class="hp-nav-drop">
+        <div class="hp-drop-wrap">
+          <button class="hp-link hp-drop-btn">Bedrijf <svg class="hp-chev" viewBox="0 0 16 16" fill="none"><path d="M4 6l4 4 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+          <div class="hp-drop">
             <a href="stat-ecofriend.php">Eco-vriendelijk</a>
             <a href="stat-employees.php">Medewerkers</a>
             <a href="stat-targets.php">Doelstellingen</a>
@@ -40,9 +37,9 @@ $klantId = (int)($_SESSION['welkNummerIsDit'] ?? 0);
           </div>
         </div>
 
-        <div class="hp-nav-dropdown">
-          <button class="hp-nav-link hp-nav-btn">Informatie <span class="hp-chevron">&#8964;</span></button>
-          <div class="hp-nav-drop">
+        <div class="hp-drop-wrap">
+          <button class="hp-link hp-drop-btn">Informatie <svg class="hp-chev" viewBox="0 0 16 16" fill="none"><path d="M4 6l4 4 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+          <div class="hp-drop">
             <a href="cli-shw-pur.php">Klanten + aankopen</a>
             <a href="cli-shw-nopur.php">Klanten zonder aankoop</a>
             <a href="cli-shw-admin.php">Alle beheerders</a>
@@ -54,9 +51,9 @@ $klantId = (int)($_SESSION['welkNummerIsDit'] ?? 0);
           </div>
         </div>
 
-        <div class="hp-nav-dropdown">
-          <button class="hp-nav-link hp-nav-btn">Onderhoud <span class="hp-chevron">&#8964;</span></button>
-          <div class="hp-nav-drop">
+        <div class="hp-drop-wrap">
+          <button class="hp-link hp-drop-btn">Onderhoud <svg class="hp-chev" viewBox="0 0 16 16" fill="none"><path d="M4 6l4 4 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+          <div class="hp-drop">
             <a href="cat-crud-get.php">Categorieen</a>
             <a href="cli-crud-get.php">Klanten</a>
             <a href="sup-crud-get.php">Leveranciers</a>
@@ -67,28 +64,27 @@ $klantId = (int)($_SESSION['welkNummerIsDit'] ?? 0);
           </div>
         </div>
 
-        <div class="hp-nav-dropdown">
-          <button class="hp-nav-link hp-nav-btn">Account <span class="hp-chevron">&#8964;</span></button>
-          <div class="hp-nav-drop">
-            <span class="hp-nav-drop-label">Ingelogd als beheerder</span>
+        <div class="hp-drop-wrap">
+          <button class="hp-link hp-drop-btn">Mijn Account <svg class="hp-chev" viewBox="0 0 16 16" fill="none"><path d="M4 6l4 4 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+          <div class="hp-drop">
+            <span class="hp-drop-label">Ingelogd als beheerder</span>
             <a href="logout.php">Uitloggen</a>
           </div>
         </div>
 
       <?php elseif ($toegang === 'Klant'): ?>
 
-        <!-- KLANT -->
-        <div class="hp-nav-dropdown">
-          <button class="hp-nav-link hp-nav-btn">Overzicht <span class="hp-chevron">&#8964;</span></button>
-          <div class="hp-nav-drop">
+        <div class="hp-drop-wrap">
+          <button class="hp-link hp-drop-btn">Overzicht <svg class="hp-chev" viewBox="0 0 16 16" fill="none"><path d="M4 6l4 4 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+          <div class="hp-drop">
             <a href="cat-crud-shw.php">Categorieën</a>
             <a href="pro-crud-shw.php">Producten</a>
           </div>
         </div>
 
-        <div class="hp-nav-dropdown">
-          <button class="hp-nav-link hp-nav-btn">Bedrijf <span class="hp-chevron">&#8964;</span></button>
-          <div class="hp-nav-drop">
+        <div class="hp-drop-wrap">
+          <button class="hp-link hp-drop-btn">Bedrijf <svg class="hp-chev" viewBox="0 0 16 16" fill="none"><path d="M4 6l4 4 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+          <div class="hp-drop">
             <a href="stat-ecofriend.php">Eco-vriendelijk</a>
             <a href="stat-employees.php">Medewerkers</a>
             <a href="stat-targets.php">Doelstellingen</a>
@@ -96,9 +92,9 @@ $klantId = (int)($_SESSION['welkNummerIsDit'] ?? 0);
           </div>
         </div>
 
-        <div class="hp-nav-dropdown">
-          <button class="hp-nav-link hp-nav-btn">Mijn Account <span class="hp-chevron">&#8964;</span></button>
-          <div class="hp-nav-drop">
+        <div class="hp-drop-wrap">
+          <button class="hp-link hp-drop-btn">Mijn Account <svg class="hp-chev" viewBox="0 0 16 16" fill="none"><path d="M4 6l4 4 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+          <div class="hp-drop">
             <a href="pur-crud-shw.php">Mijn bestellingen</a>
             <a href="pur-crud-add.php">Nieuwe bestelling</a>
             <a href="cli-crud-upd.php?id=<?= $klantId ?>">Mijn gegevens</a>
@@ -108,18 +104,17 @@ $klantId = (int)($_SESSION['welkNummerIsDit'] ?? 0);
 
       <?php else: ?>
 
-        <!-- GAST -->
-        <div class="hp-nav-dropdown">
-          <button class="hp-nav-link hp-nav-btn">Overzicht <span class="hp-chevron">&#8964;</span></button>
-          <div class="hp-nav-drop">
+        <div class="hp-drop-wrap">
+          <button class="hp-link hp-drop-btn">Overzicht <svg class="hp-chev" viewBox="0 0 16 16" fill="none"><path d="M4 6l4 4 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+          <div class="hp-drop">
             <a href="cat-crud-shw.php">Categorieën</a>
             <a href="pro-crud-shw.php">Producten</a>
           </div>
         </div>
 
-        <div class="hp-nav-dropdown">
-          <button class="hp-nav-link hp-nav-btn">Bedrijf <span class="hp-chevron">&#8964;</span></button>
-          <div class="hp-nav-drop">
+        <div class="hp-drop-wrap">
+          <button class="hp-link hp-drop-btn">Bedrijf <svg class="hp-chev" viewBox="0 0 16 16" fill="none"><path d="M4 6l4 4 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+          <div class="hp-drop">
             <a href="stat-ecofriend.php">Eco-vriendelijk</a>
             <a href="stat-employees.php">Medewerkers</a>
             <a href="stat-targets.php">Doelstellingen</a>
@@ -127,9 +122,9 @@ $klantId = (int)($_SESSION['welkNummerIsDit'] ?? 0);
           </div>
         </div>
 
-        <a href="inlog-client.php" class="hp-nav-link">Inloggen</a>
-        <a href="inlog-admin.php" class="hp-nav-link">Beheerder</a>
-        <a href="cli-crud-add.php" class="hp-nav-cta">Registreer gratis</a>
+        <a href="inlog-client.php" class="hp-link">Inloggen</a>
+        <a href="inlog-admin.php" class="hp-link">Beheerder</a>
+        <a href="cli-crud-add.php" class="hp-cta">Registreer gratis</a>
 
       <?php endif; ?>
     </div>
