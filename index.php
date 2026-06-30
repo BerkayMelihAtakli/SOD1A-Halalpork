@@ -14,123 +14,12 @@ $klantId     = (int)($_SESSION['welkNummerIsDit'] ?? 0);
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="nav.css">
     <link rel="stylesheet" href="homepage.css">
 </head>
 <body>
 
-<!-- ── NAV ─────────────────────────────────────────────────────── -->
-<nav class="hp-nav">
-  <div class="hp-nav-inner">
-    <a href="index.php" class="hp-logo">
-      <span class="hp-logo-a">Halal</span><span class="hp-logo-b">Pork</span>
-    </a>
-    <div class="hp-nav-links">
-      <a href="index.php" class="hp-link">Home</a>
-
-      <?php if ($isBeheerder): ?>
-        <div class="hp-drop-wrap">
-          <button class="hp-link hp-drop-btn">Overzicht <svg class="hp-chev" viewBox="0 0 16 16" fill="none"><path d="M4 6l4 4 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
-          <div class="hp-drop">
-            <a href="cat-crud-shw.php">Categorieën</a>
-            <a href="cli-crud-shw.php">Klanten</a>
-            <a href="sup-crud-shw.php">Leveranciers</a>
-            <a href="pro-crud-shw.php">Producten</a>
-            <a href="pur-crud-shw.php">Aankopen</a>
-            <a href="cou-crud-shw.php">Landen</a>
-          </div>
-        </div>
-        <div class="hp-drop-wrap">
-          <button class="hp-link hp-drop-btn">Bedrijf <svg class="hp-chev" viewBox="0 0 16 16" fill="none"><path d="M4 6l4 4 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
-          <div class="hp-drop">
-            <a href="stat-ecofriend.php">Eco-vriendelijk</a>
-            <a href="stat-employees.php">Medewerkers</a>
-            <a href="stat-targets.php">Doelstellingen</a>
-            <a href="stat-history.php">Geschiedenis</a>
-          </div>
-        </div>
-        <div class="hp-drop-wrap">
-          <button class="hp-link hp-drop-btn">Informatie <svg class="hp-chev" viewBox="0 0 16 16" fill="none"><path d="M4 6l4 4 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
-          <div class="hp-drop">
-            <a href="cli-shw-pur.php">Klanten + aankopen</a>
-            <a href="cli-shw-nopur.php">Klanten zonder aankoop</a>
-            <a href="cli-shw-admin.php">Alle beheerders</a>
-            <a href="avg-prodprice-per-supl.php">Prodprijs per lev</a>
-            <a href="cat-shw-avgprice.php">Prodprijs per catgr</a>
-            <a href="shw-prod-per-supl.php">Produkt per lev</a>
-            <a href="shw-prod-per-cat.php">Produkt per cat</a>
-          </div>
-        </div>
-        <div class="hp-drop-wrap">
-          <button class="hp-link hp-drop-btn">Onderhoud <svg class="hp-chev" viewBox="0 0 16 16" fill="none"><path d="M4 6l4 4 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
-          <div class="hp-drop">
-            <a href="cat-crud-get.php">Categorieen</a>
-            <a href="cli-crud-get.php">Klanten</a>
-            <a href="sup-crud-get.php">Leveranciers</a>
-            <a href="pro-crud-get.php">Producten</a>
-            <a href="pur-crud-get.php">Aankopen</a>
-            <a href="cou-crud-get.php">Landen</a>
-            <a href="admin-add.php">Beheerrechten geven</a>
-          </div>
-        </div>
-        <div class="hp-drop-wrap">
-          <button class="hp-link hp-drop-btn">Mijn Account <svg class="hp-chev" viewBox="0 0 16 16" fill="none"><path d="M4 6l4 4 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
-          <div class="hp-drop">
-            <span class="hp-drop-label">Beheerder</span>
-            <a href="logout.php">Uitloggen</a>
-          </div>
-        </div>
-
-      <?php elseif ($isLoggedIn): ?>
-        <div class="hp-drop-wrap">
-          <button class="hp-link hp-drop-btn">Overzicht <svg class="hp-chev" viewBox="0 0 16 16" fill="none"><path d="M4 6l4 4 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
-          <div class="hp-drop">
-            <a href="cat-crud-shw.php">Categorieën</a>
-            <a href="pro-crud-shw.php">Producten</a>
-          </div>
-        </div>
-        <div class="hp-drop-wrap">
-          <button class="hp-link hp-drop-btn">Bedrijf <svg class="hp-chev" viewBox="0 0 16 16" fill="none"><path d="M4 6l4 4 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
-          <div class="hp-drop">
-            <a href="stat-ecofriend.php">Eco-vriendelijk</a>
-            <a href="stat-employees.php">Medewerkers</a>
-            <a href="stat-targets.php">Doelstellingen</a>
-            <a href="stat-history.php">Geschiedenis</a>
-          </div>
-        </div>
-        <div class="hp-drop-wrap">
-          <button class="hp-link hp-drop-btn">Mijn Account <svg class="hp-chev" viewBox="0 0 16 16" fill="none"><path d="M4 6l4 4 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
-          <div class="hp-drop">
-            <a href="pur-crud-shw.php">Mijn bestellingen</a>
-            <a href="pur-crud-add.php">Nieuwe bestelling</a>
-            <a href="cli-crud-upd.php?id=<?= $klantId ?>">Mijn gegevens</a>
-            <a href="logout.php">Uitloggen</a>
-          </div>
-        </div>
-
-      <?php else: ?>
-        <div class="hp-drop-wrap">
-          <button class="hp-link hp-drop-btn">Overzicht <svg class="hp-chev" viewBox="0 0 16 16" fill="none"><path d="M4 6l4 4 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
-          <div class="hp-drop">
-            <a href="cat-crud-shw.php">Categorieën</a>
-            <a href="pro-crud-shw.php">Producten</a>
-          </div>
-        </div>
-        <div class="hp-drop-wrap">
-          <button class="hp-link hp-drop-btn">Bedrijf <svg class="hp-chev" viewBox="0 0 16 16" fill="none"><path d="M4 6l4 4 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
-          <div class="hp-drop">
-            <a href="stat-ecofriend.php">Eco-vriendelijk</a>
-            <a href="stat-employees.php">Medewerkers</a>
-            <a href="stat-targets.php">Doelstellingen</a>
-            <a href="stat-history.php">Geschiedenis</a>
-          </div>
-        </div>
-        <a href="inlog-client.php" class="hp-link">Inloggen</a>
-        <a href="inlog-admin.php" class="hp-link">Beheerder</a>
-        <a href="cli-crud-add.php" class="hp-cta">Registreer gratis</a>
-      <?php endif; ?>
-    </div>
-  </div>
-</nav>
+<?php include 'nav.html'; ?>
 
 <?php if (isset($_GET['msg'])): ?>
 <div class="hp-msg"><?= htmlspecialchars($_GET['msg']) ?></div>
