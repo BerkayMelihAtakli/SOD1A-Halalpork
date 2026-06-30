@@ -1,40 +1,47 @@
+<?php
+// nav.html — bezoeker/klant/beheerder menu
+if (!isset($_SESSION)) { session_start(); }
+$toegang = $_SESSION['SoortToegang'] ?? '';
+?>
 <header>
-		<h1>Welkom bij de Bread Company</h1>
+    <h1>Welkom bij de Bread Company</h1>
     <div class="nav-flex01">
       <ul class="main-menu">
+
         <li class="main-item"><a href="index.php">Home</a></li>
+
         <li class="main-item"><a href="#">Bedrijf</a>
-              <ul>
+            <ul>
                 <li><a href="stat-ecofriend.php" class="scndlvl">Eco-vriendelijk</a></li>
                 <li><a href="stat-employees.php" class="scndlvl">Medewerkers</a></li>
                 <li><a href="stat-targets.php" class="scndlvl">Doelstellingen</a></li>
                 <li><a href="stat-history.php" class="scndlvl">Geschiedenis</a></li>
             </ul>
         </li>
+
+        <?php if ($toegang === 'Beheer'): ?>
+        <!-- ===== BEHEERDER MENU ===== -->
         <li class="main-item"><a href="#">Overzicht</a>
             <ul>
-              <li><a href="cat-crud-shw.php" class="scndlvl">Categorieën</a></li>
-              <li><a href="cli-crud-shw.php" class="scndlvl">Klanten</a></li>
-              <li><a href="sup-crud-shw.php" class="scndlvl">Leveranciers</a></li>
-              <li><a href="pro-crud-shw.php" class="scndlvl">Produkten</a></li>
-              <li><a href="pur-crud-add.php" class="scndlvl">Bestellen</a></li>
-              <li><a href="pur-crud-shw.php" class="scndlvl">Aankopen</a></li>
-              <li><a href="pur-shw-all.php" class="scndlvl">Alle aankopen</a></li>
-              <li><a href="pur-crud-upd.php" class="scndlvl">Aankopen wijzigen</a></li>
-              <li><a href="cou-crud-shw.php" class="scndlvl">Landen</a></li>
+                <li><a href="cat-crud-shw.php" class="scndlvl">Categorieën</a></li>
+                <li><a href="cli-crud-shw.php" class="scndlvl">Klanten</a></li>
+                <li><a href="sup-crud-shw.php" class="scndlvl">Leveranciers</a></li>
+                <li><a href="pro-crud-shw.php" class="scndlvl">Producten</a></li>
+                <li><a href="pur-crud-add.php" class="scndlvl">Bestellen</a></li>
+                <li><a href="pur-crud-shw.php" class="scndlvl">Aankopen</a></li>
+                <li><a href="pur-shw-all.php" class="scndlvl">Alle aankopen</a></li>
+                <li><a href="cou-crud-shw.php" class="scndlvl">Landen</a></li>
             </ul>
         </li>
 
         <li class="main-item">
           <a href="#">Informatie</a>
           <ul class="sub-menu">
-            <li><a href="">Aantal</a>
+            <li><a href="">Klanten</a>
               <ul>
-                <li><a href="count-supl-per-country.php" class="thrdlvl">Lev per land</a></li>
-                <li><a href="count-prod-per-cat.php" class="thrdlvl">Prod per catagr</a></li>
-                <li><a href="count-purch-per-client.php" class="thrdlvl">Aankoop per klant</a></li>
-                <li><a href="count-purline-per-purch.php" class="thrdlvl">Regels&nbsp;per&nbsp;aankoop</a></li>
-                <li><a href="count-purch-per-prod.php" class="thrdlvl">Aankoop per prod</a></li>
+                <li><a href="cli-shw-purch.php" class="thrdlvl">Klanten + aankopen</a></li>
+                <li><a href="cli-shw-nopurch.php" class="thrdlvl">Klanten zonder aankoop</a></li>
+                <li><a href="cli-shw-admins.php" class="thrdlvl">Alle beheerders</a></li>
               </ul>
             </li>
             <li><a href="">Gemiddeld</a>
@@ -57,30 +64,62 @@
 
         <li class="main-item"><a href="#">Onderhoud</a>
           <ul>
-            <li><a href="cat-crud-get.php" class="scndlvl"> &nbsp; Categorieen &nbsp; </a></li>
+            <li><a href="cat-crud-get.php" class="scndlvl">Categorieen</a></li>
             <li><a href="cli-crud-get.php" class="scndlvl">Klanten</a></li>
             <li><a href="sup-crud-get.php" class="scndlvl">Leveranciers</a></li>
-            <li><a href="pro-crud-get.php" class="scndlvl"> &nbsp; Producten &nbsp; </a></li>
+            <li><a href="pro-crud-get.php" class="scndlvl">Producten</a></li>
             <li><a href="pro-crud-shw01.php" class="scndlvl">Inactieve producten</a></li>
-            <li><a href="pro-crud-shw02.php" class="scndlvl">Alle producten</a></li>
             <li><a href="pur-crud-get.php" class="scndlvl">Aankopen</a></li>
-            <li><a href="pur-crud-del.php" class="scndlvl">Aankopen verwijderen</a></li>
-            <li><a href="cou-crud-get.php" class="scndlvl"> &nbsp; Landen &nbsp; </a></li>
+            <li><a href="cou-crud-get.php" class="scndlvl">Landen</a></li>
+            <li><a href="admin-add.php" class="scndlvl">Beheerrechten geven</a></li>
           </ul>
         </li>
 
         <li class="main-item"><a href="#">Account</a>
           <ul>
-            <?php if (!empty($_SESSION['benJeErAl'])): ?>
-            <li><span class="scndlvl">Je bent al ingelogd</span></li>
+            <li><span class="scndlvl">Ingelogd als beheerder</span></li>
             <li><a href="logout.php" class="scndlvl">Uitloggen</a></li>
-            <?php else: ?>
-            <li><a href="inlog-admin.php" class="scndlvl">Inloggen beheerder</a></li>
-            <li><a href="login.php" class="scndlvl">Login (demo)</a></li>
-            <?php endif; ?>
           </ul>
         </li>
+
+        <?php elseif ($toegang === 'Klant'): ?>
+        <!-- ===== KLANT MENU ===== -->
+        <li class="main-item"><a href="#">Overzicht</a>
+            <ul>
+                <li><a href="cat-crud-shw.php" class="scndlvl">Categorieën</a></li>
+                <li><a href="pro-crud-shw.php" class="scndlvl">Producten</a></li>
+            </ul>
+        </li>
+
+        <li class="main-item"><a href="#">Mijn Account</a>
+            <ul>
+                <li><a href="pur-crud-shw.php" class="scndlvl">Mijn bestellingen</a></li>
+                <li><a href="pur-crud-add.php" class="scndlvl">Nieuwe bestelling</a></li>
+                <li><a href="cli-crud-upd.php?id=<?php echo (int)($_SESSION['welkNummerIsDit'] ?? 0); ?>" class="scndlvl">Mijn gegevens</a></li>
+            </ul>
+        </li>
+
+        <li class="main-item"><a href="logout.php">Uitloggen</a></li>
+
+        <?php else: ?>
+        <!-- ===== BEZOEKER MENU ===== -->
+        <li class="main-item"><a href="#">Overzicht</a>
+            <ul>
+                <li><a href="cat-crud-shw.php" class="scndlvl">Categorieën</a></li>
+                <li><a href="pro-crud-shw.php" class="scndlvl">Producten</a></li>
+            </ul>
+        </li>
+
+        <li class="main-item"><a href="#">Account</a>
+            <ul>
+                <li><a href="inlog-klant.php" class="scndlvl">Inloggen</a></li>
+                <li><a href="cli-crud-add.php" class="scndlvl">Registreren</a></li>
+                <li><a href="inlog-admin.php" class="scndlvl">Inloggen beheerder</a></li>
+            </ul>
+        </li>
+
+        <?php endif; ?>
+
       </ul>
     </div>
-
 </header>
