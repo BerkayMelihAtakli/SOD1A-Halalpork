@@ -4,6 +4,17 @@ $status      = $_SESSION['SoortToegang'] ?? '';
 $isLoggedIn  = in_array($status, ['Klant', 'Beheer']);
 $isBeheerder = $status === 'Beheer';
 $klantId     = (int)($_SESSION['welkNummerIsDit'] ?? 0);
+
+require_once 'dbconnect.php';
+$stmt = $db->query("
+    SELECT p.ID, p.productname, p.price, SUM(pl.quantity) AS total_sold
+    FROM product p
+    JOIN purchaseline pl ON p.ID = pl.productid
+    GROUP BY p.ID, p.productname, p.price
+    ORDER BY total_sold DESC
+    LIMIT 3
+");
+$bestsellers = $stmt->fetchAll();
 ?>
 <!DOCTYPE html>
 <html lang="nl">
@@ -89,42 +100,20 @@ $klantId     = (int)($_SESSION['welkNummerIsDit'] ?? 0);
     <div class="hp-best-inner">
         <h2>Bestsellers</h2>
         <div class="hp-best-grid">
+            <?php foreach ($bestsellers as $p): ?>
             <div class="hp-card">
                 <div class="hp-card-img">
-                    <img src="https://images.unsplash.com/photo-1590301157172-7ba48dd1c2b2?w=600&h=400&fit=crop&auto=format" alt="Zuurdesem brood op houten tafel">
+                    <img src="https://images.unsplash.com/photo-1590301157172-7ba48dd1c2b2?w=600&h=400&fit=crop&auto=format" alt="<?= htmlspecialchars($p['productname']) ?>">
                 </div>
                 <div class="hp-card-body">
                     <div>
-                        <h3>Zuurdesembrood</h3>
-                        <p>€ 6,50</p>
+                        <h3><?= htmlspecialchars($p['productname']) ?></h3>
+                        <p>€ <?= number_format($p['price'], 2, ',', '.') ?></p>
                     </div>
                     <a href="pur-crud-add.php" class="hp-card-btn">Bestel</a>
                 </div>
             </div>
-            <div class="hp-card">
-                <div class="hp-card-img">
-                    <img src="https://images.unsplash.com/photo-1555507036-ab1f4038808a?w=600&h=400&fit=crop&auto=format" alt="Versgebakken croissants">
-                </div>
-                <div class="hp-card-body">
-                    <div>
-                        <h3>Croissant</h3>
-                        <p>€ 2,95</p>
-                    </div>
-                    <a href="pur-crud-add.php" class="hp-card-btn">Bestel</a>
-                </div>
-            </div>
-            <div class="hp-card">
-                <div class="hp-card-img">
-                    <img src="https://images.unsplash.com/photo-1694632288834-17d86b340745?w=600&h=400&fit=crop&auto=format" alt="Kaneelrollen met glazuur">
-                </div>
-                <div class="hp-card-body">
-                    <div>
-                        <h3>Kaneelrol</h3>
-                        <p>€ 3,75</p>
-                    </div>
-                    <a href="pur-crud-add.php" class="hp-card-btn">Bestel</a>
-                </div>
-            </div>
+            <?php endforeach; ?>
         </div>
     </div>
 </section>
