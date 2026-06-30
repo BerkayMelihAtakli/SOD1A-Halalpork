@@ -1,0 +1,287 @@
+/* ── Homepage redesign ────────────────────────────────────────── */
+
+/* Flash message */
+.hp-msg {
+    background: #f0ebe8;
+    border-left: 4px solid #7d5ba6;
+    padding: 12px 24px;
+    font-size: 14px;
+    color: #49416d;
+}
+
+/* ── HERO ─────────────────────────────────────────────────────── */
+.hp-hero {
+    position: relative;
+    width: 100%;
+    min-height: 520px;
+    background: url('images/bread050.jpg') center/cover no-repeat;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+}
+
+.hp-hero-overlay {
+    position: absolute;
+    inset: 0;
+    background: rgba(40, 30, 55, 0.58);
+}
+
+.hp-hero-content {
+    position: relative;
+    z-index: 1;
+    color: #fff;
+    max-width: 680px;
+    padding: 40px 24px;
+}
+
+.hp-hero-content h1 {
+    font-size: 48px;
+    font-weight: 700;
+    line-height: 1.15;
+    margin-bottom: 18px;
+    color: #fff;
+}
+
+.hp-hero-content p {
+    font-size: 18px;
+    opacity: 0.88;
+    margin-bottom: 36px;
+    line-height: 1.6;
+}
+
+.hp-hero-btns {
+    display: flex;
+    gap: 16px;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+.hp-btn-primary {
+    background: #7d5ba6;
+    color: #fff;
+    padding: 14px 32px;
+    font-size: 15px;
+    font-weight: 600;
+    text-decoration: none;
+    border-radius: 3px;
+    transition: background 0.2s;
+}
+
+.hp-btn-primary:hover {
+    background: #6a4a91;
+    color: #fff;
+}
+
+.hp-btn-secondary {
+    background: transparent;
+    color: #fff;
+    padding: 13px 32px;
+    font-size: 15px;
+    font-weight: 600;
+    text-decoration: none;
+    border: 2px solid rgba(255,255,255,0.7);
+    border-radius: 3px;
+    transition: border-color 0.2s, background 0.2s;
+}
+
+.hp-btn-secondary:hover {
+    border-color: #fff;
+    background: rgba(255,255,255,0.08);
+    color: #fff;
+}
+
+/* ── SECTIONS ─────────────────────────────────────────────────── */
+.hp-section {
+    padding: 72px 24px;
+    text-align: center;
+}
+
+.hp-section h2 {
+    font-size: 32px;
+    font-weight: 700;
+    color: #2a2a2a;
+    margin-bottom: 48px;
+}
+
+/* ── WAAROM WIJ ───────────────────────────────────────────────── */
+.hp-why {
+    background: #fff;
+}
+
+.hp-why-grid {
+    display: flex;
+    gap: 40px;
+    justify-content: center;
+    flex-wrap: wrap;
+    max-width: 960px;
+    margin: 0 auto;
+}
+
+.hp-why-item {
+    flex: 1;
+    min-width: 220px;
+    max-width: 280px;
+}
+
+.hp-why-icon {
+    font-size: 40px;
+    margin-bottom: 16px;
+}
+
+.hp-why-item h3 {
+    font-size: 17px;
+    font-weight: 700;
+    color: #2a2a2a;
+    margin-bottom: 10px;
+}
+
+.hp-why-item p {
+    font-size: 14px;
+    color: #626262;
+    line-height: 1.65;
+}
+
+/* ── HOE WERKT HET ────────────────────────────────────────────── */
+.hp-how-grid {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 24px;
+    flex-wrap: wrap;
+    max-width: 860px;
+    margin: 0 auto;
+}
+
+.hp-how-step {
+    flex: 1;
+    min-width: 180px;
+    max-width: 220px;
+    text-align: center;
+}
+
+.hp-how-num {
+    width: 52px;
+    height: 52px;
+    border-radius: 50%;
+    background: #7d5ba6;
+    color: #fff;
+    font-size: 22px;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 16px;
+}
+
+.hp-how-step h3 {
+    font-size: 16px;
+    font-weight: 700;
+    color: #2a2a2a;
+    margin-bottom: 8px;
+}
+
+.hp-how-step p {
+    font-size: 14px;
+    color: #626262;
+    line-height: 1.6;
+}
+
+.hp-how-arrow {
+    font-size: 28px;
+    color: #c0b8d0;
+    flex-shrink: 0;
+}
+
+/* ── FOOTER ───────────────────────────────────────────────────── */
+.hp-footer {
+    background: #49416d;
+    color: #fff;
+    padding: 64px 24px 32px;
+}
+
+.hp-footer-inner {
+    display: flex;
+    gap: 48px;
+    flex-wrap: wrap;
+    justify-content: center;
+    max-width: 960px;
+    margin: 0 auto 40px;
+}
+
+.hp-footer-col {
+    flex: 1;
+    min-width: 180px;
+}
+
+.hp-footer-col h4 {
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    opacity: 0.6;
+    margin-bottom: 20px;
+    color: #fff;
+}
+
+.hp-footer-col ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.hp-footer-col ul li {
+    margin-bottom: 10px;
+    display: block;
+}
+
+.hp-footer-col a {
+    font-size: 14px;
+    color: rgba(255,255,255,0.7);
+    text-decoration: none;
+    transition: color 0.2s;
+}
+
+.hp-footer-col a:hover {
+    color: #fff;
+}
+
+.hp-footer-times li {
+    display: flex;
+    justify-content: space-between;
+    gap: 16px;
+    font-size: 14px;
+    color: rgba(255,255,255,0.7);
+    margin-bottom: 10px;
+}
+
+.hp-footer-social {
+    display: flex;
+    gap: 14px;
+    margin-bottom: 16px;
+    font-size: 22px;
+    cursor: default;
+}
+
+.hp-footer-col p {
+    font-size: 13px;
+    color: rgba(255,255,255,0.6);
+    line-height: 1.6;
+}
+
+.hp-footer-copy {
+    border-top: 1px solid rgba(255,255,255,0.1);
+    padding-top: 24px;
+    text-align: center;
+}
+
+.hp-footer-copy p {
+    font-size: 12px;
+    color: rgba(255,255,255,0.35);
+}
+
+/* ── override: main não se aplica à homepage ──────────────────── */
+body:has(.hp-hero) main {
+    width: 100%;
+    margin: 0;
+}
