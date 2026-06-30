@@ -132,10 +132,6 @@
                 <label for="supp_domain">Website : </label>
                 <textarea rows="10" cols="50" name="supp_domain" readonly><?php echo $dataSupplier["website"]; ?></textarea>
             </fieldset>
-        <!-- Een "reset" knop (leeg maken van het formulier) heeft hieronder geen zin. Dan zijn alle gegevens
-        van de leverancier verdwenen. Het is daarom beter om terug te keren naar het eerste formulier. daar
-        kan de gebruiker de gegevens opnieuw opvragen. 
-        Bij het openen van het programma is het aanleverende programma vastgelegd in variabele $return_prog -->
             <fieldset class="tbodyflex, spacebelowabove">
                 <button type="submit" formaction="<?php echo $return_prog; ?>">Breek af</button>&nbsp;&nbsp;
                 <input type="submit" value="Verwijder" name="supp_applydelete">

@@ -15,7 +15,7 @@ function require_admin() {
 }
 
 function render_header($title) {
-    echo '<!DOCTYPE html><html lang="nl"><head><meta charset="UTF-8"><title>' . h($title) . '</title><link rel="stylesheet" type="text/css" href="company.css"></head><body>';
+    echo '<!DOCTYPE html><html lang="nl"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>' . h($title) . '</title><link rel="stylesheet" href="company.css"></head><body>';
     include 'nav.html';
 }
 
@@ -56,6 +56,57 @@ function validate_product_input(&$errors) {
         $errors[] = 'Kies een leverancier.';
     }
     return $product;
+}
+
+function getProductImage(string $name, int $categoryId = 0): string {
+    $n = mb_strtolower($name);
+    $b = 'https://images.unsplash.com/';
+    $q = '?w=600&h=400&fit=crop&auto=format';
+
+    if (str_contains($n, 'stroopwafel') || str_contains($n, 'wafel'))         return $b.'photo-1611835116500-03c9eb3c7200'.$q;
+    if (str_contains($n, 'croissant'))                                         return $b.'photo-1555507036-ab1f4038808a'.$q;
+    if (str_contains($n, 'kaneelrol') || str_contains($n, 'kaneel'))          return $b.'photo-1694632288834-17d86b340745'.$q;
+    if (str_contains($n, 'tiramisu') || str_contains($n, 'tompouce')
+     || str_contains($n, 'schnitte') || str_contains($n, 'muffin')
+     || str_contains($n, 'banket')   || str_contains($n, 'speculaas')
+     || str_contains($n, 'vlaai')    || str_contains($n, 'cakejes'))           return $b.'photo-1534432182912-63863115e106'.$q;
+    if (str_contains($n, 'chocolade') || str_contains($n, 'choco')
+     || str_contains($n, 'chocolava'))                                         return $b.'photo-1679812000098-ff557c197028'.$q;
+    if (str_contains($n, 'ciabatta'))                                          return $b.'photo-1667386773920-c73f3b02a3d6'.$q;
+    if (str_contains($n, 'baguette'))                                          return $b.'photo-1667386773920-c73f3b02a3d6'.$q;
+    if (str_contains($n, 'emmer') || str_contains($n, 'spelt'))               return $b.'photo-1559811814-e2c57b5e69df'.$q;
+    if (str_contains($n, 'tijger'))                                            return $b.'photo-1598373182133-52452f7691ef'.$q;
+    if (str_contains($n, 'casino'))                                            return $b.'photo-1534620808146-d33bb39128b2'.$q;
+    if (str_contains($n, 'naan') || str_contains($n, 'turks')
+     || str_contains($n, 'pita'))                                              return $b.'photo-1549413468-cd78edb7e75c'.$q;
+    if (str_contains($n, 'rozijn') || str_contains($n, 'krent')
+     || str_contains($n, 'abrikoos'))                                          return $b.'photo-1719475738774-e62c4bd01e26'.$q;
+    if (str_contains($n, 'rogge'))                                             return $b.'photo-1598373182133-52452f7691ef'.$q;
+    if (str_contains($n, 'zuurdesem') || str_contains($n, 'desem')
+     || str_contains($n, 'volkoren') || str_contains($n, 'liefde'))           return $b.'photo-1590301157172-7ba48dd1c2b2'.$q;
+    if (str_contains($n, 'bol') || str_contains($n, 'bollen')
+     || str_contains($n, 'pistolet') || str_contains($n, 'petit pain')
+     || str_contains($n, 'worstenbrood') || str_contains($n, 'saucijzen')
+     || str_contains($n, 'hamburger') || str_contains($n, 'roombrood'))       return $b.'photo-1566698629409-787a68fc5724'.$q;
+    if (str_contains($n, 'wit ') || str_contains($n, 'witte')
+     || str_contains($n, 'white'))                                             return $b.'photo-1534620808146-d33bb39128b2'.$q;
+
+    $catImages = [
+        1  => $b.'photo-1534432182912-63863115e106'.$q,
+        2  => $b.'photo-1590301157172-7ba48dd1c2b2'.$q,
+        3  => $b.'photo-1559811814-e2c57b5e69df'.$q,
+        4  => $b.'photo-1667386773920-c73f3b02a3d6'.$q,
+        5  => $b.'photo-1549413468-cd78edb7e75c'.$q,
+        6  => $b.'photo-1719475738774-e62c4bd01e26'.$q,
+        7  => $b.'photo-1566698629409-787a68fc5724'.$q,
+        8  => $b.'photo-1559811814-e2c57b5e69df'.$q,
+        9  => $b.'photo-1566698629409-787a68fc5724'.$q,
+        10 => $b.'photo-1534620808146-d33bb39128b2'.$q,
+        11 => $b.'photo-1566698629409-787a68fc5724'.$q,
+    ];
+    if (isset($catImages[$categoryId])) return $catImages[$categoryId];
+
+    return $b.'photo-1590301157172-7ba48dd1c2b2'.$q;
 }
 
 function price_to_form($price) {

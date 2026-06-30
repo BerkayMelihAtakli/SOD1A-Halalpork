@@ -6,35 +6,16 @@ $isBeheerder = $status === 'Beheer';
 $klantId     = (int)($_SESSION['welkNummerIsDit'] ?? 0);
 
 require_once 'dbconnect.php';
+require_once 'product_helpers.php';
 $stmt = $db->query("
-    SELECT p.ID, p.productname, p.price, SUM(pl.quantity) AS total_sold
+    SELECT p.ID, p.productname, p.price, p.categoryid, SUM(pl.quantity) AS total_sold
     FROM product p
     JOIN purchaseline pl ON p.ID = pl.productid
-    GROUP BY p.ID, p.productname, p.price
+    GROUP BY p.ID, p.productname, p.price, p.categoryid
     ORDER BY total_sold DESC
     LIMIT 3
 ");
 $bestsellers = $stmt->fetchAll();
-
-function getBestsellerImage(string $name): string {
-    $n = mb_strtolower($name);
-    $base = 'https://images.unsplash.com/';
-    $suffix = '?w=600&h=400&fit=crop&auto=format';
-
-    if (str_contains($n, 'stroopwafel'))                              return $base.'photo-1611835116500-03c9eb3c7200'.$suffix;
-    if (str_contains($n, 'croissant'))                                return $base.'photo-1555507036-ab1f4038808a'.$suffix;
-    if (str_contains($n, 'kaneelrol') || str_contains($n, 'kaneel')) return $base.'photo-1694632288834-17d86b340745'.$suffix;
-    if (str_contains($n, 'tiramisu'))                                 return $base.'photo-1571877227200-a0d98ea607e9'.$suffix;
-    if (str_contains($n, 'chocolade') || str_contains($n, 'choco'))  return $base.'photo-1679812000098-ff557c197028'.$suffix;
-    if (str_contains($n, 'ciabatta'))                                 return $base.'photo-1667386773920-c73f3b02a3d6'.$suffix;
-    if (str_contains($n, 'emmer') || str_contains($n, 'spelt'))      return $base.'photo-1559811814-e2c57b5e69df'.$suffix;
-    if (str_contains($n, 'tijger'))                                   return $base.'photo-1598373182133-52452f7691ef'.$suffix;
-    if (str_contains($n, 'casino') || str_contains($n, 'sandwich'))  return $base.'photo-1534620808146-d33bb39128b2'.$suffix;
-    if (str_contains($n, 'naan') || str_contains($n, 'turks'))       return $base.'photo-1549413468-cd78edb7e75c'.$suffix;
-    if (str_contains($n, 'rogge'))                                    return $base.'photo-1559811814-e2c57b5e69df'.$suffix;
-
-    return $base.'photo-1590301157172-7ba48dd1c2b2'.$suffix;
-}
 ?>
 <!DOCTYPE html>
 <html lang="nl">
@@ -42,13 +23,9 @@ function getBestsellerImage(string $name): string {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>The Bread Company</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="nav.css">
-    <link rel="stylesheet" href="homepage.css">
+    <link rel="stylesheet" href="company.css?v=2">
 </head>
-<body>
+<body class="hp-page">
 
 <?php include 'nav.html'; ?>
 
@@ -56,7 +33,7 @@ function getBestsellerImage(string $name): string {
 <div class="hp-msg"><?= htmlspecialchars($_GET['msg']) ?></div>
 <?php endif; ?>
 
-<!-- ── HERO ─────────────────────────────────────────────────────── -->
+
 <section class="hp-hero">
     <img src="https://images.unsplash.com/photo-1725297952102-ab28892a31ab?w=1600&h=600&fit=crop&auto=format" alt="Vers artisanaal brood" class="hp-hero-img">
     <div class="hp-hero-overlay"></div>
@@ -71,15 +48,13 @@ function getBestsellerImage(string $name): string {
                 <a href="pur-crud-add.php" class="hp-btn-primary">Bestel nu</a>
                 <a href="cli-crud-upd.php?id=<?= $klantId ?>" class="hp-btn-outline">Mijn gegevens</a>
             <?php else: ?>
-                <a href="pur-crud-add.php" class="hp-btn-primary">Bestel nu</a>
-                <a href="inlog-client.php" class="hp-btn-outline">Inloggen</a>
+                <a href="inlog-client.php" class="hp-btn-primary">Inloggen</a>
                 <a href="cli-crud-add.php" class="hp-btn-outline">Registreer</a>
             <?php endif; ?>
         </div>
     </div>
 </section>
 
-<!-- ── WAAROM WIJ ─────────────────────────────────────────────── -->
 <section class="hp-why">
     <div class="hp-why-inner">
         <h2 class="hp-why-title">Waarom wij?</h2>
@@ -115,7 +90,6 @@ function getBestsellerImage(string $name): string {
     </div>
 </section>
 
-<!-- ── BESTSELLERS ────────────────────────────────────────────── -->
 <section class="hp-best">
     <div class="hp-best-inner">
         <h2>Bestsellers</h2>
@@ -123,7 +97,7 @@ function getBestsellerImage(string $name): string {
             <?php foreach ($bestsellers as $p): ?>
             <div class="hp-card">
                 <div class="hp-card-img">
-                    <img src="<?= getBestsellerImage($p['productname']) ?>" alt="<?= htmlspecialchars($p['productname']) ?>">
+                    <img src="<?= getProductImage($p['productname'], (int)$p['categoryid']) ?>" alt="<?= htmlspecialchars($p['productname']) ?>">
                 </div>
                 <div class="hp-card-body">
                     <div>
@@ -138,7 +112,6 @@ function getBestsellerImage(string $name): string {
     </div>
 </section>
 
-<!-- ── HOE WERKT HET ──────────────────────────────────────────── -->
 <section class="hp-how">
     <div class="hp-how-inner">
         <h2>Hoe werkt het?</h2>
@@ -163,7 +136,6 @@ function getBestsellerImage(string $name): string {
     </div>
 </section>
 
-<!-- ── FOOTER ─────────────────────────────────────────────────── -->
 <footer class="hp-footer">
     <div class="hp-footer-inner">
         <div class="hp-footer-col">

@@ -1,8 +1,8 @@
 <?php
 session_start();
 require_once "dbconnect.php";
+require_once "product_helpers.php";
 
-// Stats per group
 $groupStats = $db->query("
     SELECT
         SUM(categoryid IN (2,5,6,8,10) AND isactive='J') AS brood_count,
@@ -14,19 +14,18 @@ $groupStats = $db->query("
     FROM product
 ")->fetch(PDO::FETCH_ASSOC);
 
-// Van de week: 1 product per group (highest price, active)
 $vanDeWeek = $db->query("
-    (SELECT p.productname, p.price, p.allergens, c.name AS category, 'brood' AS groep
+    (SELECT p.productname, p.price, p.allergens, p.categoryid, c.name AS category, 'brood' AS groep
      FROM product p LEFT JOIN category c ON p.categoryid = c.ID
      WHERE p.categoryid IN (2,5,6,8,10) AND p.isactive='J'
      ORDER BY p.price DESC LIMIT 1)
     UNION ALL
-    (SELECT p.productname, p.price, p.allergens, c.name AS category, 'broodjes' AS groep
+    (SELECT p.productname, p.price, p.allergens, p.categoryid, c.name AS category, 'broodjes' AS groep
      FROM product p LEFT JOIN category c ON p.categoryid = c.ID
      WHERE p.categoryid IN (3,4,7,9,11) AND p.isactive='J'
      ORDER BY p.price DESC LIMIT 1)
     UNION ALL
-    (SELECT p.productname, p.price, p.allergens, c.name AS category, 'gebak' AS groep
+    (SELECT p.productname, p.price, p.allergens, p.categoryid, c.name AS category, 'gebak' AS groep
      FROM product p LEFT JOIN category c ON p.categoryid = c.ID
      WHERE p.categoryid = 1 AND p.isactive='J'
      ORDER BY p.price DESC LIMIT 1)
@@ -38,104 +37,9 @@ $vanDeWeek = $db->query("
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Assortiment — The Bread Company</title>
-    <link rel="stylesheet" href="style.css">
-    <style>
-        .page-hero { border-bottom: 1px solid #ded6cc; }
-        .page-hero-inner { padding: 48px 0; }
-        .page-hero-inner h1 { font-size: 50px; line-height: 1; margin: 10px 0 12px; }
-        .page-hero-inner .intro-text { max-width: 520px; }
-
-        /* Van de week */
-        .week-section { background: #231209; border-bottom: 1px solid #ded6cc; }
-        .week-inner { padding: 52px 0; }
-        .week-inner > .eyebrow { color: #d89a18; }
-        .week-inner > h2 { color: #f6efe6; font-size: 36px; margin: 10px 0 32px; }
-        .week-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
-        .week-card {
-            background: rgba(255,255,255,0.05);
-            border: 1px solid rgba(255,255,255,0.1);
-            border-radius: 12px;
-            padding: 24px;
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-        }
-        .week-groep {
-            font-size: 10px; font-weight: 700; text-transform: uppercase;
-            letter-spacing: .07em; color: #d89a18;
-        }
-        .week-name {
-            font-family: Georgia, serif; font-size: 18px; font-weight: 700;
-            color: #f6efe6; line-height: 1.2;
-        }
-        .week-cat { font-size: 11px; color: #8a7b70; }
-        .week-footer { display: flex; align-items: center; justify-content: space-between; margin-top: 6px; }
-        .week-price { font-family: Georgia, serif; font-size: 24px; font-weight: 700; color: #d89a18; }
-        .week-badge {
-            font-size: 10px; font-weight: 700; padding: 3px 9px; border-radius: 20px;
-            background: rgba(216,154,24,0.2); color: #d89a18; border: 1px solid rgba(216,154,24,0.35);
-        }
-
-        /* Category cards */
-        .groups-section { padding: 56px 0 64px; }
-        .groups-section > .container > .eyebrow { margin-bottom: 10px; }
-        .groups-section > .container > h2 { font-size: 38px; margin: 0 0 36px; }
-        .groups-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
-
-        .group-card {
-            border: 1px solid #ded6cc;
-            border-radius: 14px;
-            overflow: hidden;
-            background: #fff;
-            display: flex;
-            flex-direction: column;
-            transition: box-shadow .2s, transform .2s;
-            text-decoration: none;
-            color: inherit;
-        }
-        .group-card:hover { box-shadow: 0 10px 28px rgba(35,18,9,.10); transform: translateY(-3px); }
-
-        .group-card-top {
-            height: 140px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            flex-direction: column;
-            gap: 10px;
-        }
-        .group-card-top.brood    { background: linear-gradient(135deg, #fdf3dc, #f5e6c0); }
-        .group-card-top.broodjes { background: linear-gradient(135deg, #f0f8e8, #dcefd0); }
-        .group-card-top.gebak    { background: linear-gradient(135deg, #fde8f0, #f5cee0); }
-
-        .group-card-top svg { width: 52px; height: 52px; }
-        .group-card-top.brood    svg { color: #b87b1a; }
-        .group-card-top.broodjes svg { color: #4a7c35; }
-        .group-card-top.gebak    svg { color: #a8346a; }
-
-        .group-card-body { padding: 22px 22px 18px; flex: 1; }
-        .group-card-title { font-family: Georgia, serif; font-size: 24px; font-weight: 700; color: #2b1b10; margin: 0 0 8px; }
-        .group-card-desc { font-size: 13px; line-height: 1.55; color: #6c5f53; margin: 0; }
-
-        .group-card-footer {
-            display: flex; align-items: center; justify-content: space-between;
-            padding: 14px 22px; border-top: 1px solid #ede8e2;
-        }
-        .group-meta { font-size: 12px; color: #6c5f53; }
-        .group-meta strong { color: #2b1b10; }
-        .group-link {
-            display: inline-flex; align-items: center; gap: 6px;
-            font-size: 13px; font-weight: 600; color: #d89a18;
-        }
-        .group-link svg { width: 16px; height: 16px; }
-
-        @media (max-width: 900px) {
-            .container { padding-left: 20px; padding-right: 20px; }
-            .week-grid, .groups-grid { grid-template-columns: 1fr; }
-            .page-hero-inner h1 { font-size: 36px; }
-        }
-    </style>
+    <link rel="stylesheet" href="company.css">
 </head>
-<body>
+<body class="hp-page">
 <div class="page">
 
     <header>
@@ -206,12 +110,18 @@ $vanDeWeek = $db->query("
                 <div class="week-grid">
                     <?php foreach ($vanDeWeek as $p): ?>
                     <div class="week-card">
-                        <span class="week-groep">&#9733; Aanrader — <?= htmlspecialchars(ucfirst($p['groep'])) ?></span>
-                        <p class="week-name"><?= htmlspecialchars($p['productname']) ?></p>
-                        <span class="week-cat"><?= htmlspecialchars(ucfirst($p['category'])) ?></span>
-                        <div class="week-footer">
-                            <span class="week-price">€<?= number_format((float)$p['price'], 2, ',', '') ?></span>
-                            <span class="week-badge">Van de week</span>
+                        <div class="week-card-img">
+                            <img src="<?= getProductImage($p['productname'], (int)$p['categoryid']) ?>"
+                                 alt="<?= htmlspecialchars($p['productname']) ?>">
+                        </div>
+                        <div class="week-card-body">
+                            <span class="week-groep">&#9733; Aanrader — <?= htmlspecialchars(ucfirst($p['groep'])) ?></span>
+                            <p class="week-name"><?= htmlspecialchars($p['productname']) ?></p>
+                            <span class="week-cat"><?= htmlspecialchars(ucfirst($p['category'])) ?></span>
+                            <div class="week-footer">
+                                <span class="week-price">€<?= number_format((float)$p['price'], 2, ',', '') ?></span>
+                                <span class="week-badge">Van de week</span>
+                            </div>
                         </div>
                     </div>
                     <?php endforeach; ?>
