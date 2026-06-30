@@ -12,12 +12,25 @@ if ($id <= 0) {
     exit();
 }
 
+// Check open orders
 $check = $db->prepare('SELECT COUNT(*) FROM purchase WHERE clientid = :id AND delivered = 0');
 $check->execute([':id' => $id]);
 if ((int)$check->fetchColumn() > 0) {
-    echo '<main><h2>Klant kan niet verwijderd worden</h2>';
-    echo '<p>Deze klant heeft nog een niet-afgeleverde bestelling.</p>';
-    echo '<p><a href="cli-crud-get.php">Terug naar onderhoud klanten</a></p></main>';
+    echo '<main class="centering"><h2>Klant mag niet verwijderd worden</h2>';
+    echo '<p>Klant mag niet verwijderd worden vanwege openstaande bestellingen.</p>';
+    echo '<p><a href="cli-crud-get.php">Terug naar klantenlijst</a></p></main>';
+    render_footer();
+    exit();
+}
+
+// Check if client is admin
+$chkAdmin = $db->prepare("SELECT isadmin FROM client WHERE id = :id");
+$chkAdmin->execute([':id' => $id]);
+$row = $chkAdmin->fetch(PDO::FETCH_ASSOC);
+if ($row && $row['isadmin'] === 'J') {
+    echo '<main class="centering"><h2>Klant mag niet verwijderd worden</h2>';
+    echo '<p>Klant is beheerder en mag niet verwijderd worden.</p>';
+    echo '<p><a href="cli-crud-get.php">Terug naar klantenlijst</a></p></main>';
     render_footer();
     exit();
 }
@@ -51,8 +64,8 @@ $_SESSION['delete_client_id'] = $id;
     </table>
     <form action="cli-crud-delete.php" method="post">
         <input type="hidden" name="client_id" value="<?php echo h($client['id']); ?>">
-        <button type="submit" formaction="cli-crud-get.php">Breek af</button>
-        <input type="submit" name="client_delete" value="Verwijder">
+        <a href="cli-crud-get.php"><button type="button">Breek af</button></a>
+        <input type="submit" value="Verwijder">
     </form>
 </main>
 <?php render_footer(); ?>
