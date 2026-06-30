@@ -1,9 +1,9 @@
 <?php
 session_start();
-$status = $_SESSION['SoortToegang'] ?? 'gast';
+$status      = $_SESSION['SoortToegang'] ?? 'gast';
 $isLoggedIn  = in_array($status, ['Klant', 'Beheer']);
 $isBeheerder = $status === 'Beheer';
-$naam = $_SESSION['wieBenJeDan'] ?? '';
+$klantId     = (int)($_SESSION['welkNummerIsDit'] ?? 0);
 ?>
 <!DOCTYPE html>
 <html lang="nl">
@@ -15,6 +15,7 @@ $naam = $_SESSION['wieBenJeDan'] ?? '';
     <link rel="stylesheet" href="homepage.css">
 </head>
 <body>
+
 <?php include "nav.html"; ?>
 
 <?php if (isset($_GET['msg'])): ?>
@@ -26,14 +27,14 @@ $naam = $_SESSION['wieBenJeDan'] ?? '';
     <div class="hp-hero-overlay"></div>
     <div class="hp-hero-content">
         <h1>Vers gebakken,<br>direct bij jou thuis</h1>
-        <p>Ambachtelijk brood, knapperige broodjes en luxe gebak — gemaakt met de beste ingrediënten.</p>
+        <p>Ambachtelijk brood, knapperige broodjes en luxe gebak — gemaakt met de beste ingrediënten, zonder kunstmatige toevoegingen.</p>
         <div class="hp-hero-btns">
             <?php if ($isBeheerder): ?>
                 <a href="cli-crud-get.php" class="hp-btn-primary">Klantenbeheer</a>
                 <a href="pro-crud-get.php" class="hp-btn-secondary">Productbeheer</a>
             <?php elseif ($isLoggedIn): ?>
                 <a href="pur-crud-add.php" class="hp-btn-primary">Bestel nu</a>
-                <a href="cli-crud-upd.php" class="hp-btn-secondary">Mijn gegevens</a>
+                <a href="cli-crud-upd.php?id=<?= $klantId ?>" class="hp-btn-secondary">Mijn gegevens</a>
             <?php else: ?>
                 <a href="cli-crud-add.php" class="hp-btn-primary">Registreer gratis</a>
                 <a href="inlog-client.php" class="hp-btn-secondary">Inloggen</a>
@@ -65,7 +66,7 @@ $naam = $_SESSION['wieBenJeDan'] ?? '';
 </section>
 
 <!-- HOE WERKT HET -->
-<section class="hp-section hp-how" style="background:#f5f3f0;">
+<section class="hp-section hp-how">
     <h2>Hoe werkt het?</h2>
     <div class="hp-how-grid">
         <div class="hp-how-step">
@@ -98,7 +99,7 @@ $naam = $_SESSION['wieBenJeDan'] ?? '';
                 <li><a href="pro-crud-shw.php">Producten</a></li>
                 <?php if ($isLoggedIn && !$isBeheerder): ?>
                 <li><a href="pur-crud-shw.php">Mijn bestellingen</a></li>
-                <li><a href="cli-crud-upd.php">Mijn gegevens</a></li>
+                <li><a href="cli-crud-upd.php?id=<?= $klantId ?>">Mijn gegevens</a></li>
                 <?php endif; ?>
                 <?php if (!$isLoggedIn): ?>
                 <li><a href="inlog-client.php">Inloggen</a></li>
@@ -117,9 +118,9 @@ $naam = $_SESSION['wieBenJeDan'] ?? '';
         <div class="hp-footer-col">
             <h4>Volg ons</h4>
             <div class="hp-footer-social">
-                <span title="Instagram">📷</span>
-                <span title="Facebook">👍</span>
-                <span title="Twitter">🐦</span>
+                <button class="hp-footer-social-btn" aria-label="Instagram">📷</button>
+                <button class="hp-footer-social-btn" aria-label="Facebook">👍</button>
+                <button class="hp-footer-social-btn" aria-label="Twitter">🐦</button>
             </div>
             <p>Blijf op de hoogte van onze dagelijkse aanbiedingen en nieuwe producten.</p>
         </div>
