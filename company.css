@@ -152,10 +152,63 @@ li.frstlvl > a {
   text-align: center;
 }
   
-.centering 
+.centering
 {
   width: 80vw;
   margin: 20px auto;
   text-align: center;
+}
+
+/* Formulier-layout voor client CRUD (label + input per rij) */
+.tabledisp {
+  display: grid;
+  grid-template-columns: 1fr 2fr;
+  gap: 8px 12px;
+  max-width: 500px;
+  margin: 0 auto;
+  text-align: left;
+}
+
+.tabledisp label {
+  font-weight: bold;
+  padding-top: 6px;
+}
+
+.tabledisp input,
+.tabledisp select {
+  padding: 5px 8px;
+  border: 1px solid #ccc;
+  border-radius: 3px;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.tabledisp p {
+  grid-column: 1 / -1;
+  margin-top: 8px;
+}
+
+/* Overzichtstabel voor client CRUD */
+.tabledisp2 {
+  border-collapse: collapse;
+  width: 100%;
+  margin: 10px auto;
+}
+
+.tabledisp2 th,
+.tabledisp2 td {
+  border: 1px solid #ccc;
+  padding: 6px 10px;
+  text-align: left;
+}
+
+.tabledisp2 thead td,
+.tabledisp2 thead th {
+  background-color: #f0f0f0;
+  font-weight: bold;
+}
+
+.tabledisp2 tbody tr:nth-child(even) td {
+  background-color: #f9f9f9;
 }
 
