@@ -46,4 +46,13 @@ $stmt->execute([$id]);
 $naam = trim($beheerder['first_name'] . ' ' . $beheerder['last_name']);
 $_SESSION['message'] = "Beheerrechten van '$naam' zijn succesvol verwijderd.";
 header('Location: beh-crud-get.php');
+
+$eigenId = (int)($_SESSION['id'] ?? 0);
+
+
+$stmt = $pdo->prepare("SELECT id, first_name, last_name, email FROM client WHERE isadmin = 'J' AND id != ?");
+$stmt->execute([$eigenId]);
+$beheerdersLijst = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+
 exit;
