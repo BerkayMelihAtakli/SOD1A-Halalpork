@@ -1,30 +1,15 @@
 <?php
 require_once "dbconnect.php";
 
-$connectie = mysqli_connect($dbhost, $dbgebruiker, $dbwachtwoord, $dbnaam);
-
-if (!$connectie) {
-    die("Verbinding met de database is mislukt: " . mysqli_connect_error());
-}
-
-$sql = "SELECT supplier.ID, supplier.company, supplier.adress, supplier.streetnr,
-               supplier.city, country.name, AVG(product.price) AS gemprijs
-        FROM supplier
-        INNER JOIN country ON supplier.countryid = country.ID
-        INNER JOIN product ON supplier.ID = product.supplierid
-        GROUP BY supplier.ID, supplier.company, supplier.adress, supplier.streetnr,
-                 supplier.city, country.name
-        ORDER BY supplier.ID";
-
-$resultaat = mysqli_query($connectie, $sql);
-
-if (!$resultaat) {
-    die("Fout in de query: " . mysqli_error($connectie));
-}
-
-function h($value) {
-    return htmlspecialchars($value, ENT_QUOTES, 'UTF-8');
-}
+$stmt = $db->query("SELECT supplier.ID, supplier.company, supplier.adress, supplier.streetnr,
+                           supplier.city, country.name, AVG(product.price) AS gemprijs
+                    FROM supplier
+                    INNER JOIN country ON supplier.countryid = country.ID
+                    INNER JOIN product ON supplier.ID = product.supplierid
+                    GROUP BY supplier.ID, supplier.company, supplier.adress, supplier.streetnr,
+                             supplier.city, country.name
+                    ORDER BY supplier.ID");
+$rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
 ?>
 <!DOCTYPE html>
 <html lang="nl">
@@ -54,19 +39,17 @@ function h($value) {
             <th>Gemiddelde prijs</th>
         </tr>
 
-        <?php while ($rij = mysqli_fetch_assoc($resultaat)) : ?>
+        <?php foreach ($rows as $row): ?>
         <tr>
-            <td><?= h($rij['ID']) ?></td>
-            <td><?= h($rij['company']) ?></td>
-            <td><?= h($rij['adress']) ?></td>
-            <td><?= h($rij['streetnr']) ?></td>
-            <td><?= h($rij['city']) ?></td>
-            <td><?= h($rij['name']) ?></td>
-            <td>&euro; <?= number_format($rij['gemprijs'], 2, ',', '.') ?></td>
+            <td><?= htmlspecialchars($row['ID'], ENT_QUOTES, 'UTF-8') ?></td>
+            <td><?= htmlspecialchars($row['company'], ENT_QUOTES, 'UTF-8') ?></td>
+            <td><?= htmlspecialchars($row['adress'], ENT_QUOTES, 'UTF-8') ?></td>
+            <td><?= htmlspecialchars($row['streetnr'], ENT_QUOTES, 'UTF-8') ?></td>
+            <td><?= htmlspecialchars($row['city'], ENT_QUOTES, 'UTF-8') ?></td>
+            <td><?= htmlspecialchars($row['name'], ENT_QUOTES, 'UTF-8') ?></td>
+            <td>&euro; <?= number_format((float)$row['gemprijs'], 2, ',', '.') ?></td>
         </tr>
-        <?php endwhile; ?>
+        <?php endforeach; ?>
     </table>
 </body>
 </html>
-
-<?php mysqli_close($connectie); ?>
