@@ -2,11 +2,15 @@
 session_start();
 require_once 'dbconnect.php';
 
-if (!isset($_SESSION['role']) || $_SESSION['role'] !== 'admin') {
+if (
+    !isset($_SESSION['benJeErAl']) ||
+    $_SESSION['benJeErAl'] !== true ||
+    !isset($_SESSION['SoortToegang']) ||
+    $_SESSION['SoortToegang'] !== 'Beheer'
+) {
     header('Location: login.php');
     exit;
 }
-
 $id   = (int)($_POST['id'] ?? 0);
 $name = trim($_POST['name'] ?? '');
 $code = trim($_POST['code'] ?? '');

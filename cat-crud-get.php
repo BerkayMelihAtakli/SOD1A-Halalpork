@@ -2,12 +2,17 @@
 session_start();
 require_once 'dbconnect.php';
 
-if (!isset($_SESSION['role']) || $_SESSION['role'] !== 'admin') {
+if (
+    !isset($_SESSION['benJeErAl']) ||
+    $_SESSION['benJeErAl'] !== true ||
+    !isset($_SESSION['SoortToegang']) ||
+    $_SESSION['SoortToegang'] !== 'Beheer'
+) {
     header('Location: login.php');
     exit;
 }
 
-$stmt = $pdo->query("SELECT * FROM category ORDER BY name");
+$stmt = $pdo->query("SELECT ID AS id, name FROM category ORDER BY name");
 $categories = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
 $message = $_SESSION['message'] ?? '';
