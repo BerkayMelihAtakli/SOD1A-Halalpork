@@ -23,7 +23,7 @@ $countries = $stmt->fetchAll(PDO::FETCH_ASSOC);
     <tr><th>ID</th><th>Naam</th><th>Code</th></tr>
     <?php foreach ($countries as $cou): ?>
     <tr>
-        <td><?= htmlspecialchars($cou['id']) ?></td>
+        <td><?= htmlspecialchars($cou['idcountry']) ?></td>
         <td><?= htmlspecialchars($cou['name']) ?></td>
         <td><?= htmlspecialchars($cou['code']) ?></td>
     </tr>

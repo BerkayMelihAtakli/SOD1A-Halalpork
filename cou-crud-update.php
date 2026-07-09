@@ -37,7 +37,7 @@ if ($code === '' || !preg_match('/^[a-zA-ZÀ-ÿ\s]+$/', $code)) {
 }
 
 
-$stmt = $pdo->prepare("SELECT COUNT(*) FROM country WHERE LOWER(name) = LOWER(?) AND id != ?");
+$stmt = $pdo->prepare("SELECT COUNT(*) FROM country WHERE LOWER(name) = LOWER(?) AND idcountry != ?");
 $stmt->execute([$name, $id]);
 if ($stmt->fetchColumn() > 0) {
     $_SESSION['error'] = 'Deze landnaam bestaat al.';
@@ -47,7 +47,7 @@ if ($stmt->fetchColumn() > 0) {
 }
 
 
-$stmt = $pdo->prepare("SELECT COUNT(*) FROM country WHERE LOWER(code) = LOWER(?) AND id != ?");
+$stmt = $pdo->prepare("SELECT COUNT(*) FROM country WHERE LOWER(code) = LOWER(?) AND idcountry != ?");
 $stmt->execute([$code, $id]);
 if ($stmt->fetchColumn() > 0) {
     $_SESSION['error'] = 'Deze landcode bestaat al.';
@@ -57,7 +57,7 @@ if ($stmt->fetchColumn() > 0) {
 }
 
 
-$stmt = $pdo->prepare("UPDATE country SET name = ?, code = ? WHERE id = ?");
+$stmt = $pdo->prepare("UPDATE country SET name = ?, code = ? WHERE idcountry = ?");
 $stmt->execute([$name, $code, $id]);
 
 $_SESSION['message'] = "Land succesvol bijgewerkt.";

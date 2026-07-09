@@ -18,7 +18,7 @@ if ($id === 0) {
     exit;
 }
 
-$stmt = $pdo->prepare("SELECT * FROM country WHERE id = ?");
+$stmt = $pdo->prepare("SELECT * FROM country WHERE idcountry = ?");
 $stmt->execute([$id]);
 $cou = $stmt->fetch(PDO::FETCH_ASSOC);
 
@@ -42,9 +42,9 @@ unset($_SESSION['error'], $_SESSION['old']);
 <?php endif; ?>
 
 <form action="cou-crud-update.php" method="POST">
-    <input type="hidden" name="id" value="<?= $cou['id'] ?>">
+    <input type="hidden" name="id" value="<?= $cou['idcountry'] ?>">
 
-    <label>ID: <input type="text" value="<?= htmlspecialchars($cou['id']) ?>" disabled></label>
+    <label>ID: <input type="text" value="<?= htmlspecialchars($cou['idcountry']) ?>" disabled></label>
     <br><br>
     <label>Naam: 
         <input type="text" name="name" value="<?= htmlspecialchars($old['name'] ?? $cou['name']) ?>" required>

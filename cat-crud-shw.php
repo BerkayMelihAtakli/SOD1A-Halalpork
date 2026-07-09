@@ -12,7 +12,7 @@ if (
     header('Location: login.php');
     exit;
 }
-$stmt = $pdo->query("SELECT * FROM category ORDER BY name");
+$stmt = $pdo->query("SELECT ID AS id, name FROM category ORDER BY name");
 $categories = $stmt->fetchAll(PDO::FETCH_ASSOC);
 ?>
 <!DOCTYPE html>

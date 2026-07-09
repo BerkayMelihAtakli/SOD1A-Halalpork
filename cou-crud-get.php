@@ -39,12 +39,12 @@ unset($_SESSION['message']);
     </tr>
     <?php foreach ($countries as $cou): ?>
     <tr>
-        <td><?= htmlspecialchars($cou['id']) ?></td>
+        <td><?= htmlspecialchars($cou['idcountry']) ?></td>
         <td><?= htmlspecialchars($cou['name']) ?></td>
         <td><?= htmlspecialchars($cou['code']) ?></td>
         <td>
-            <a href="cou-crud-upd.php?id=<?= $cou['id'] ?>"><button>Wijzigen</button></a>
-            <a href="cou-crud-del.php?id=<?= $cou['id'] ?>"><button>Verwijderen</button></a>
+            <a href="cou-crud-upd.php?id=<?= $cou['idcountry'] ?>"><button>Wijzigen</button></a>
+            <a href="cou-crud-del.php?id=<?= $cou['idcountry'] ?>"><button>Verwijderen</button></a>
         </td>
     </tr>
     <?php endforeach; ?>

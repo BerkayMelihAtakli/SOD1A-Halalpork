@@ -27,7 +27,7 @@ if ($stmt->fetchColumn() > 0) {
     exit;
 }
 
-$stmt = $pdo->prepare("SELECT * FROM country WHERE id = ?");
+$stmt = $pdo->prepare("SELECT * FROM country WHERE idcountry = ?");
 $stmt->execute([$id]);
 $cou = $stmt->fetch(PDO::FETCH_ASSOC);
 
@@ -45,14 +45,14 @@ if (!$cou) {
 <p>Weet je zeker dat je het volgende land wilt verwijderen?</p>
 
 <table border="1" cellpadding="8">
-    <tr><th>ID</th><td><?= htmlspecialchars($cou['id']) ?></td></tr>
+    <tr><th>ID</th><td><?= htmlspecialchars($cou['idcountry']) ?></td></tr>
     <tr><th>Naam</th><td><?= htmlspecialchars($cou['name']) ?></td></tr>
     <tr><th>Code</th><td><?= htmlspecialchars($cou['code']) ?></td></tr>
 </table>
 
 <br>
 <form action="cou-crud-delete.php" method="POST">
-    <input type="hidden" name="id" value="<?= $cou['id'] ?>">
+    <input type="hidden" name="id" value="<?= $cou['idcountry'] ?>">
     <a href="cou-crud-get.php"><button type="button">Breek af</button></a>
     <button type="submit" style="color:red;">Verwijder</button>
 </form>

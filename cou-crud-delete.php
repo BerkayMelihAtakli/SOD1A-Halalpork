@@ -18,7 +18,7 @@ if ($id === 0) {
     exit;
 }
 
-$stmt = $pdo->prepare("DELETE FROM country WHERE id = ?");
+$stmt = $pdo->prepare("DELETE FROM country WHERE idcountry = ?");
 $stmt->execute([$id]);
 
 $_SESSION['message'] = "Land succesvol verwijderd.";
